@@ -16,6 +16,7 @@ class GameBoardViewModel {
   List<GameBlockModel> gameBlockMap = [];
   List<List<GameBlockModel>> allGameBlockMap = [];
   SpinType spinType = SpinType.none;
+  bool _autoBtnEnable = false;
 
   init() {
     _getRandom();
@@ -40,7 +41,7 @@ class GameBoardViewModel {
 
   checkAndRemoveRewardBlock({
     required List<VerticalBoard> verticalList,
-  }) {
+  }) async {
     final Map<GameBlockType, num> resultMap = allGameBlockMap.getEachTypeHasSix;
     final List<GameBlockType> rewardTypeList = resultMap.entries
         .where((map) => map.value >= 5)
@@ -80,7 +81,7 @@ class GameBoardViewModel {
     spinType = SpinType.spin;
   }
 
-  stopSpin({
+  Future<void> stopSpin({
     required List<VerticalBoard> verticalList,
   }) async {
     for(int i = 0; i < allGameBlockMap.length; i++) {
@@ -97,15 +98,33 @@ class GameBoardViewModel {
     verticalList.first.gameBlockComponentList.first.updateSprite(GameBlockType.ten.getBlockImgPath);
   }
 
-  actionSpin({
+  Future<void> actionSpin({
     required List<VerticalBoard> verticalList,
-  }) {
+  }) async {
     if(spinType == SpinType.stop || spinType == SpinType.none) {
-      startSpin(verticalList: verticalList);
+      await startSpin(verticalList: verticalList);
     }
 
     if(spinType == SpinType.spin) {
-      stopSpin(verticalList: verticalList);
+      await stopSpin(verticalList: verticalList);
+    }
+  }
+
+  playOnce({
+    required List<VerticalBoard> verticalList,
+  }) async {
+    await actionSpin(verticalList: verticalList);
+    checkAndRemoveRewardBlock(verticalList: verticalList);
+  }
+
+  playAuto({
+    required List<VerticalBoard> verticalList,
+  }) async {
+    _autoBtnEnable = !_autoBtnEnable;
+    while(_autoBtnEnable) {
+      await actionSpin(verticalList: verticalList);
+      checkAndRemoveRewardBlock(verticalList: verticalList);
+      await Future.delayed(const Duration(seconds: 2));
     }
   }
 }

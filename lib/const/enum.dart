@@ -21,7 +21,6 @@ enum LayoutMode {
   portrait
 }
 
-/// 遊戲排版模式。
 enum SpinType {
   spin,
   stop,
