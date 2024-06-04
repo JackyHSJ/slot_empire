@@ -43,7 +43,7 @@ class SlotGameCenter extends FlameGame {
     // world.add(slotMachine!);
 
     /// Spin
-    _loadSpinAnimate();
+    // _loadSpinAnimate();
 
     _loadGameBoard();
     super.onLoad();
@@ -105,7 +105,7 @@ class SlotGameCenter extends FlameGame {
 
   @override
   void onDetach() {
-    spineSnowGlobe.dispose();
+    // spineSnowGlobe.dispose();
     super.onDetach();
   }
 }
