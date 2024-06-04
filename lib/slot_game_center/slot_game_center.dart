@@ -15,6 +15,7 @@ class SlotGameCenter extends FlameGame {
   late Function stateCallbackHandler;
   //當前使用的 layout mode.
   LayoutMode _layoutMode = LayoutMode.none;
+  late SpineComponent spineSnowGlobe;
 
   /// 當前的排版模式。
   LayoutMode get currentLayoutMode {
@@ -62,7 +63,7 @@ class SlotGameCenter extends FlameGame {
   }
 
   _loadSpinAnimate() async {
-    SpineComponent spineSnowGlobe = await SpineComponent.fromAssets(
+    spineSnowGlobe = await SpineComponent.fromAssets(
         atlasFile: 'assets/spine/snowglobe/snowglobe-pro.atlas',
         skeletonFile: 'assets/spine/snowglobe/snowglobe-pro.json',
         scale: Vector2(0.2, 0.2),
@@ -100,5 +101,11 @@ class SlotGameCenter extends FlameGame {
   /// 重新整理介面，根據 layout 模式。
   void _refreshUIsByLayout(LayoutMode layoutMode) {
     // Todo
+  }
+
+  @override
+  void onDetach() {
+    spineSnowGlobe.dispose();
+    super.onDetach();
   }
 }
