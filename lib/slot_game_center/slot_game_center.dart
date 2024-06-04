@@ -42,9 +42,8 @@ class SlotGameCenter extends FlameGame {
     // world.add(slotMachine!);
 
     /// Spin
-    // await initSpineFlutter();
-    // _loadSpinAnimate();
-    
+    _loadSpinAnimate();
+
     _loadGameBoard();
     super.onLoad();
   }
@@ -70,8 +69,8 @@ class SlotGameCenter extends FlameGame {
         anchor: Anchor.center,
         position: Vector2(0, -500)
     );
-    world.add(spineSnowGlobe);
     spineSnowGlobe.animationState.setAnimationByName(0, 'shake', true);
+    world.add(spineSnowGlobe);
   }
 
   void _layoutBySize(Vector2 size) {
