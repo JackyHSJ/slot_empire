@@ -16,7 +16,7 @@ extension GameBlockTypeExtension on List<List<GameBlockModel>> {
     num totemDoll = 0;
 
     forEach((blockMap) {
-      for (int i = 4; i >= 0; i--) {
+      for (int i = blockMap.length - 1; i >= 5; i--) {
         final block = blockMap[i];
         switch (block.type) {
           case GameBlockType.blockJ:

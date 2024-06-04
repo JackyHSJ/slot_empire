@@ -54,13 +54,13 @@ class VerticalBoardViewModel {
   }
 
   void checkUpdateFallingBlocks({
-    // required List<GameBlockModel> gameBlockMap,
+    required List<GameBlockModel> verticalGameBlockMap,
     required ComponentSet children,
     required int horizontalIndex,
     required Function(VerticalBlockModel) onAddToUpdate
   }) {
     int blockEmptySum = 0;
-    for (int i = 5 - 1; i >= 0; i--) {
+    for (int i = verticalGameBlockMap.length -1; i >= 5; i--) {
       final Vector2 currentPosition = getVector2(x: GlobalValue.blockVector.x * horizontalIndex + 0, y: GlobalValue.blockVector.y * i);
       final bool isSpaceHasBlock = children.toList().any((b) {
         final position = (b as SpriteComponent).position;
@@ -69,7 +69,7 @@ class VerticalBoardViewModel {
         return positionY - currentPositionY == 0;
       }); /// 檢查每空格是否具有方塊
       if(isSpaceHasBlock == false) {
-        blockEmptySum++;
+        blockEmptySum += verticalGameBlockMap[i].coverNumber.toInt();
       }
 
       /// 第一個方塊(i != 0) 不需計算掉落
@@ -112,11 +112,11 @@ class VerticalBoardViewModel {
 
   /// 補齊缺少區塊
   void addFallingBlocks({
-    required List<GameBlockModel> gameBlockMap,
+    required List<GameBlockModel> verticalGameBlockMap,
     required ComponentSet children,
     required Function(int) onLoadGameBlock
   }) {
-    final int missingBlocksCount = gameBlockMap.length - children.length;
+    final int missingBlocksCount = verticalGameBlockMap.length - children.length;
     for (int i = missingBlocksCount - 1; i >= 0; i--) {
       onLoadGameBlock(i);
     }

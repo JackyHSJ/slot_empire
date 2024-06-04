@@ -42,6 +42,8 @@ dependencies:
   flame: ^1.15.0
   flame_spine: 0.2.1
   flame_rive: 1.10.2
+  url_launcher: 6.1.14
+#  flutter_inappwebview: 6.0.0
 
 dev_dependencies:
   flutter_test:

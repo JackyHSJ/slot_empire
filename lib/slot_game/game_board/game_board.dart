@@ -4,12 +4,14 @@ import 'package:example_slot_game/const/enum.dart';
 import 'package:example_slot_game/const/global_value.dart';
 import 'package:example_slot_game/extension/game_block_type.dart';
 import 'package:example_slot_game/slot_game/game_board/game_board_view_model.dart';
+import 'package:example_slot_game/slot_game/game_board/setting_menu/setting_menu.dart';
 import 'package:example_slot_game/slot_game/horizontal_board/horizontal_board.dart';
 import 'package:example_slot_game/slot_game/vertical_board/vertical_board.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame/input.dart';
+import 'package:flame/layout.dart';
 import 'package:flutter/material.dart';
 
 class GameBoard extends PositionComponent {
@@ -19,8 +21,10 @@ class GameBoard extends PositionComponent {
 
   late GameBoardViewModel viewModel;
   List<VerticalBoard> verticalList = [];
+  List<HorizontalBoard> horizontalList = [];
+
   LayoutMode currentLayoutMode;
-  late ClipComponent clipComponent;
+  final SettingMenu settingMenu = SettingMenu();
 
   @override
   Future<void> onLoad() async {
@@ -30,7 +34,7 @@ class GameBoard extends PositionComponent {
     // 載入背景
     await _loadMainBlockBackgroundImg();
 
-    _loadVerticalAndClip();
+    _loadMatrixAndClip();
 
     /// 載入跑馬燈
     _loadMarquee();
@@ -44,6 +48,7 @@ class GameBoard extends PositionComponent {
     _loadSettingBtn();
     _loadWiFiIcon();
     _loadWinIcon();
+    _buildBalance();
     super.onLoad();
   }
 
@@ -111,33 +116,43 @@ class GameBoard extends PositionComponent {
     add(backgroundComponent);
   }
 
-  _loadVerticalAndClip() {
+  _loadMatrixAndClip() {
     /// 載入方塊 x 6
-    for(int i = 0; i < viewModel.allGameBlockMap.length; i++) {
+    for(int i = 0; i < viewModel.allVerticalGameBlockMap.length; i++) {
       _loadVerticalBoard(i);
     }
-    clipComponent = ClipComponent.rectangle(
+    _loadHorizontalBoard();
+
+    /// Clip Vertical
+    final ClipComponent verticalClipComponent = ClipComponent.rectangle(
         anchor: Anchor.center,
         size: Vector2(GlobalValue.blockVector.x * 6, GlobalValue.blockVector.y * 5),
         position: Vector2(0, 150),
         children: verticalList
     );
-    add(clipComponent);
+    add(verticalClipComponent);
+
+    /// Clip Horizontal
+    final ClipComponent horizontalClipComponent = ClipComponent.rectangle(
+        anchor: Anchor.center,
+        size: Vector2(GlobalValue.blockVector.x * 4, GlobalValue.blockVector.y * 1),
+        position: Vector2(0, -180),
+        children: horizontalList,
+    );
+    add(horizontalClipComponent);
   }
 
   _loadVerticalBoard(int horizontalIndex) {
     VerticalBoard verticalBoard = VerticalBoard(
       horizontalIndex: horizontalIndex,
-      gameBlockMap: viewModel.allGameBlockMap[horizontalIndex]
+      verticalGameBlockMap: viewModel.allVerticalGameBlockMap[horizontalIndex]
     );
     verticalList.add(verticalBoard);
   }
 
-  _loadHorizontalBoard(int horizontalIndex) {
-    final HorizontalBoard horizontalBoard = HorizontalBoard(
-
-    );
-    add(horizontalBoard);
+  _loadHorizontalBoard() {
+    final HorizontalBoard horizontalBoard = HorizontalBoard(horizontalGameBlockMap: viewModel.horizontalGameBlockMap);
+    horizontalList.add(horizontalBoard);
   }
 
   _loadFlashBtn() async {
@@ -146,7 +161,7 @@ class GameBoard extends PositionComponent {
         spritePath: 'navigation/flash_on.png',
         position: position,
         size: Vector2(100, 100),
-        onPressed: () {}
+        onPressed: () => viewModel.flash()
     );
   }
 
@@ -156,7 +171,7 @@ class GameBoard extends PositionComponent {
       spritePath: 'navigation/auto.png',
       position: position,
       size: Vector2(100, 100),
-      onPressed: () => viewModel.playAuto(verticalList: verticalList)
+      onPressed: () => viewModel.playAuto(verticalList: verticalList, horizontalList: horizontalList)
     );
   }
 
@@ -165,9 +180,10 @@ class GameBoard extends PositionComponent {
     _loadBtn(
         spritePath: 'navigation/order.png',
         position: position,
+        title: 'Bet 3',
         size: Vector2(100, 100),
         onPressed: () {
-
+          print('order');
         }
     );
   }
@@ -178,9 +194,7 @@ class GameBoard extends PositionComponent {
         spritePath: 'navigation/setting.png',
         position: position,
         size: Vector2(100, 100),
-        onPressed: () {
-
-        }
+        onPressed: () => _loadSettingMenu()
     );
   }
 
@@ -190,7 +204,7 @@ class GameBoard extends PositionComponent {
         spritePath: 'navigation/icons_23.png',
         position: position,
         size: Vector2(200, 170),
-        onPressed: () => viewModel.playOnce(verticalList: verticalList)
+        onPressed: () => viewModel.playOnce(verticalList: verticalList, horizontalList: horizontalList)
     );
   }
 
@@ -198,17 +212,49 @@ class GameBoard extends PositionComponent {
     required String spritePath,
     required Vector2 position,
     required Vector2 size,
+    String title = '',
     required Function() onPressed
   }) async {
     final Sprite btnSprite = await Sprite.load(spritePath);
+    final TextComponent textComponent = TextComponent(text: title, position: Vector2(25, 100));
     final SpriteButtonComponent btnComponent = SpriteButtonComponent(
         anchor: Anchor.center,
         button: btnSprite,
         size: size,
         position: position,
+        children: [
+          textComponent
+        ],
         onPressed: () => onPressed()
     );
     add(btnComponent);
+  }
+
+  _loadSettingMenu() async {
+    if(settingMenu.isMounted) {
+      settingMenu.removeFromParent();
+      return ;
+    }
+    add(settingMenu);
+  }
+
+
+
+  _buildBalance() {
+    final TextComponent balance = TextComponent(
+      text: '2,000.00',
+      position: Vector2(110, 0),
+      textRenderer: TextPaint(style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.w600, letterSpacing: -1)),
+    );
+    final TextComponent textComponent = TextComponent(
+      text: 'Balance',
+      textRenderer: TextPaint(style: TextStyle(color: Colors.yellowAccent, fontSize: 30)),
+      position: Vector2(-150, 700),
+      children: [
+        balance
+      ]
+    );
+    add(textComponent);
   }
 
   @override

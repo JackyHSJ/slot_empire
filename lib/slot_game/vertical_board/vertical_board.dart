@@ -3,10 +3,11 @@ import 'dart:async';
 import 'dart:ui';
 import 'package:example_slot_game/const/enum.dart';
 import 'package:example_slot_game/const/global_value.dart';
+import 'package:example_slot_game/extension/game_block_model.dart';
 import 'package:example_slot_game/extension/game_block_type.dart';
 import 'package:example_slot_game/model/game_block_model.dart';
 import 'package:example_slot_game/model/vertical_block_model.dart';
-import 'package:example_slot_game/slot_game/vertical_board/single_block/single_block.dart';
+import 'package:example_slot_game/slot_game/single_block/single_block.dart';
 import 'package:example_slot_game/slot_game/vertical_board/vertical_board_view_model.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
@@ -15,11 +16,11 @@ import 'package:flutter/material.dart';
 class VerticalBoard extends PositionComponent {
   VerticalBoard({
     required this.horizontalIndex,
-    required this.gameBlockMap,
-  });
+    required this.verticalGameBlockMap,
+  }): super(position: Vector2(0, -520)); // 顯示6 ~ 10 行
 
   int horizontalIndex;
-  List<GameBlockModel> gameBlockMap;
+  List<GameBlockModel> verticalGameBlockMap;
   late VerticalBoardViewModel viewModel;
   List<SingleBlock> gameBlockComponentList = [];
   late MoveEffect spinMoveEffect;
@@ -28,7 +29,7 @@ class VerticalBoard extends PositionComponent {
   @override
   Future<void> onLoad() async {
     viewModel = VerticalBoardViewModel();
-    for (int i = 0; i < gameBlockMap.length; i++) {
+    for (int i = 0; i < verticalGameBlockMap.length; i++) {
       await _loadGameBlock(i);
     }
     super.onLoad();
@@ -36,8 +37,6 @@ class VerticalBoard extends PositionComponent {
 
   @override
   void render(Canvas canvas) {
-    // final Rect rect = Rect.fromLTWH(-420, -120, GlobalValue.blockVector.x * 6, GlobalValue.blockVector.y * 5);
-    // canvas.clipRect(rect);
     super.render(canvas);
   }
 
@@ -50,7 +49,8 @@ class VerticalBoard extends PositionComponent {
   Future<void> _loadGameBlock(int verticalIndex, {
     bool addFallingBlocks = false
   }) async {
-    final String imgPath = gameBlockMap[verticalIndex].type.getBlockImgPath;
+    final num coverNum = verticalGameBlockMap[verticalIndex].coverNumber;
+    final String imgPath = verticalGameBlockMap[verticalIndex].getBlockImgPath;
     final Sprite gameBlockSprite = await Sprite.load(imgPath);
 
     // Calculate the final position
@@ -67,25 +67,28 @@ class VerticalBoard extends PositionComponent {
     final Vector2 startPosition = addFallingBlocks ? animateStart : finalPosition;
 
     final SingleBlock gameBlockComponent = SingleBlock(
-        gameBlockMap: gameBlockMap,
-        verticalIndex: verticalIndex,
         startPosition: startPosition,
         gameBlockSprite: gameBlockSprite,
+        coverNum: coverNum
     );
-    gameBlockComponentList.add(gameBlockComponent);
-    add(gameBlockComponent);
 
-    if (addFallingBlocks) {
+    if(addFallingBlocks == false) {
+      gameBlockComponentList.add(gameBlockComponent);
+      addAll(gameBlockComponentList);
+    }
+
+    if (addFallingBlocks == true) {
       final Vector2 animateEnd = viewModel.getBlockVector2(
           x: 0, y: 0,
           blockWidth: GlobalValue.blockVector.x,
           blockHigh: GlobalValue.blockVector.y,
           horizontalIndex: horizontalIndex,
-          verticalIndex: verticalIndex
+          verticalIndex: 5 + verticalIndex
       );
       final EffectController controller = EffectController(duration: 0.4, curve: Curves.elasticInOut);
       final MoveEffect moveEffect = MoveEffect.to(animateEnd, controller);
       gameBlockComponent.add(moveEffect);
+      add(gameBlockComponent);
     }
   }
 
@@ -99,8 +102,8 @@ class VerticalBoard extends PositionComponent {
     required int removeIndex
   }) {
     removeWhere((component) => viewModel.removeBlocks(
-        component: component,
-        removeIndex: removeIndex
+      component: component,
+      removeIndex: removeIndex
     ));
   }
 
@@ -108,9 +111,9 @@ class VerticalBoard extends PositionComponent {
   void updateFallingBlocks() {
     List<VerticalBlockModel> toUpdate = [];
 
-    /// 檢查每個方塊上方 5個方塊
+    /// 檢查每個方塊下方 5個方塊
     viewModel.checkUpdateFallingBlocks(
-      // gameBlockMap: gameBlockMap,
+      verticalGameBlockMap: verticalGameBlockMap,
       children: children,
       horizontalIndex: horizontalIndex,
       onAddToUpdate: (model) => toUpdate.add(model)
@@ -127,7 +130,7 @@ class VerticalBoard extends PositionComponent {
   /// 全部動畫完成
   void moveEffectDone() {
     viewModel.addFallingBlocks(
-      gameBlockMap: gameBlockMap,
+      verticalGameBlockMap: verticalGameBlockMap,
       children: children,
       onLoadGameBlock: (index) => _loadGameBlock(index, addFallingBlocks: true)
     );
@@ -137,21 +140,19 @@ class VerticalBoard extends PositionComponent {
     if(spinType == SpinType.spin) {
       return ;
     }
-    final Vector2 animateEnd = Vector2(0, -GlobalValue.blockVector.y * 5);
-    controller = EffectController(duration: 0.2, infinite: true);
+    final Vector2 animateEnd = Vector2(0, 0);
+    controller = EffectController(duration: 0.1, infinite: true);
     spinMoveEffect = MoveEffect.to(animateEnd, controller);
     add(spinMoveEffect);
   }
 
-  stopSpin(SpinType spinType, {
-    required int verticalIndex
-  }) {
+  stopSpin(SpinType spinType) {
     if(spinType == SpinType.none || spinType == SpinType.stop) {
       return ;
     }
     spinMoveEffect.reset();
     removeAll(children.whereType<Effect>());
-    final Vector2 finalPosition = viewModel.getVector2(x: -72, y: -50);
+    final Vector2 finalPosition = viewModel.getVector2(x: -72, y: -520); // 最終顯示 6 ~ 10行
     position = finalPosition;
   }
 }
