@@ -10,11 +10,11 @@
 		</data>
 		<key>flutter_assets/AssetManifest.bin</key>
 		<data>
-		KNMqzfDsPnMdeDhyk8RhUqcGAfk=
+		czloU+d4qYnGJPZKLpe40mIHuFg=
 		</data>
 		<key>flutter_assets/AssetManifest.json</key>
 		<data>
-		8DA++vVlX8O5isSKSl3Nx8yVNiw=
+		WaMQx9XrvaZd9o1HLzZ058rbYBY=
 		</data>
 		<key>flutter_assets/FontManifest.json</key>
 		<data>
@@ -22,7 +22,7 @@
 		</data>
 		<key>flutter_assets/NOTICES.Z</key>
 		<data>
-		T3szSwwEPSp/CzbQmtumxpK7XxM=
+		TVfUm232hItk8pwFQ2Bl7zokQKQ=
 		</data>
 		<key>flutter_assets/assets/images/Background/.DS_Store</key>
 		<data>
@@ -416,6 +416,14 @@
 		<data>
 		L/MkqrCyTN3QlQpPt3GUU8REi6c=
 		</data>
+		<key>flutter_assets/assets/images/GameTXT/Super_Win_1.png</key>
+		<data>
+		/l7S+7Q9qY60Gldqych0iA1ECJI=
+		</data>
+		<key>flutter_assets/assets/images/GameTXT/Super_Win_2.png</key>
+		<data>
+		L/MkqrCyTN3QlQpPt3GUU8REi6c=
+		</data>
 		<key>flutter_assets/assets/images/icons/AutoPlay_Setting.png</key>
 		<data>
 		WUuOKouTeo+U5j21XneWcY8fRbM=
@@ -520,6 +528,14 @@
 		<data>
 		8fyJJGSjNxgT5L6MwnnhHn4icMo=
 		</data>
+		<key>flutter_assets/assets/images/navigation/flash_off.png</key>
+		<data>
+		3FrYT0xw92CT04S3ZWhZwbn/k2M=
+		</data>
+		<key>flutter_assets/assets/images/navigation/flash_on.png</key>
+		<data>
+		4TJjeFJ9tabxVnyDY+KxE+BC70k=
+		</data>
 		<key>flutter_assets/assets/images/navigation/icons_03.png</key>
 		<data>
 		4DceKzO8zQz6cjfCncy83/t3WTY=
@@ -539,6 +555,14 @@
 		<key>flutter_assets/assets/images/navigation/order.png</key>
 		<data>
 		yx71rles839W1ICRbPw8kVVS7tw=
+		</data>
+		<key>flutter_assets/assets/images/navigation/setting.png</key>
+		<data>
+		ikwtwOKmJFtC4hNSUFksyU8+t4s=
+		</data>
+		<key>flutter_assets/assets/images/navigation/setting_mezu.png</key>
+		<data>
+		hBniwHW/rbi4gAG7/0jTKrAAW28=
 		</data>
 		<key>flutter_assets/assets/images/navigation/spin.png</key>
 		<data>
@@ -590,7 +614,7 @@
 		</data>
 		<key>flutter_assets/kernel_blob.bin</key>
 		<data>
-		17lqqLp+QuRnoFlinFT91i7xlu0=
+		M1ospLrJHPPTeFdHr5pxVMLkQQE=
 		</data>
 		<key>flutter_assets/packages/cupertino_icons/assets/CupertinoIcons.ttf</key>
 		<data>
@@ -635,14 +659,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			o0bvJTkxEZHzdfwPownKb1tTMgqnEWueeVbFVAJusoE=
+			u0i+BQnqY1As/g5tlNIkCBw38Gh2JiXyseO837T4YyI=
 			</data>
 		</dict>
 		<key>flutter_assets/AssetManifest.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			EB7Pt4LmTLmTktGz9Mm0Hht8uxzbsnxeQNc8Iexpkv8=
+			LQQKOZxQaIKVShvodAo4ZemB/8IZ4RJ/CPg3SZ/bzPE=
 			</data>
 		</dict>
 		<key>flutter_assets/FontManifest.json</key>
@@ -656,7 +680,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			I/PVNvXPtfMS4I7SiU2l1cponcK7lz6KS7OgmVPgWT8=
+			DvV0+pznFa/nPkFjDAe+kgeq9uZalkrezpAxZi0Mylw=
 			</data>
 		</dict>
 		<key>flutter_assets/assets/images/Background/Bg1.png</key>
@@ -1338,6 +1362,20 @@
 			mvbb49BU1sA2+b6D/t4av7ukShi4rpieZYVuAGn6trg=
 			</data>
 		</dict>
+		<key>flutter_assets/assets/images/GameTXT/Super_Win_1.png</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			XXa2dUmK72TgtmsEE0lSAyYZELzFML3PfpNFY0nmd/c=
+			</data>
+		</dict>
+		<key>flutter_assets/assets/images/GameTXT/Super_Win_2.png</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			mvbb49BU1sA2+b6D/t4av7ukShi4rpieZYVuAGn6trg=
+			</data>
+		</dict>
 		<key>flutter_assets/assets/images/icons/AutoPlay_Setting.png</key>
 		<dict>
 			<key>hash2</key>
@@ -1520,6 +1558,20 @@
 			+5Ng9jKsMxe/dbOdLW6haGlNF4JpLXwmfFrlf9ZMUXo=
 			</data>
 		</dict>
+		<key>flutter_assets/assets/images/navigation/flash_off.png</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			D1BNtUh6jKiRZIahbhGg3HFuea+8hnGr4eJQ9Q/UQEU=
+			</data>
+		</dict>
+		<key>flutter_assets/assets/images/navigation/flash_on.png</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			L6o9Mbbp6ldqUF3JZfaJIsnIjmafmhQcvfOlhNfcmR8=
+			</data>
+		</dict>
 		<key>flutter_assets/assets/images/navigation/icons_03.png</key>
 		<dict>
 			<key>hash2</key>
@@ -1553,6 +1605,20 @@
 			<key>hash2</key>
 			<data>
 			SCVFT3CO87WtQfXd6Yvv75qD2kg4i8di14t/bq6AC5I=
+			</data>
+		</dict>
+		<key>flutter_assets/assets/images/navigation/setting.png</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			2sYkndfrFM1n9nvnmQbXuyxf2LNlOs2UFaqzdSc8w6A=
+			</data>
+		</dict>
+		<key>flutter_assets/assets/images/navigation/setting_mezu.png</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			Yexg+DCjEffc/X/SBogsGYEMxKFQm5V1cIus8+SDRfg=
 			</data>
 		</dict>
 		<key>flutter_assets/assets/images/navigation/spin.png</key>
@@ -1643,7 +1709,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			xYT52HbK6y7fBlx8l9juSD9tksW8z91rNN2urb6xCAQ=
+			WEdoXPs9zcP/kqmEyEQhvOZzzebcuQnnm6UqLDznkho=
 			</data>
 		</dict>
 		<key>flutter_assets/packages/cupertino_icons/assets/CupertinoIcons.ttf</key>

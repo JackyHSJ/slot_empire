@@ -8,12 +8,15 @@ PODS:
   - spine_flutter (0.0.1):
     - Flutter
   - Toast (4.1.1)
+  - url_launcher_ios (0.0.1):
+    - Flutter
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - rive_common (from `.symlinks/plugins/rive_common/ios`)
   - spine_flutter (from `.symlinks/plugins/spine_flutter/ios`)
+  - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
 
 SPEC REPOS:
   trunk:
@@ -28,13 +31,16 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/rive_common/ios"
   spine_flutter:
     :path: ".symlinks/plugins/spine_flutter/ios"
+  url_launcher_ios:
+    :path: ".symlinks/plugins/url_launcher_ios/ios"
 
 SPEC CHECKSUMS:
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   fluttertoast: 9f2f8e81bb5ce18facb9748d7855bf5a756fe3db
   rive_common: 3a4c254c6e4db7e4b9e05daeb3d1f47ae4f7bf76
-  spine_flutter: 3cf69e7f1454c942d0f41f292ee8638b8eed8f0a
+  spine_flutter: 6eccf3e378344cc533378130d77bcfba04a12bfe
   Toast: 1f5ea13423a1e6674c4abdac5be53587ae481c4e
+  url_launcher_ios: 5334b05cef931de560670eeae103fd3e431ac3fe
 
 PODFILE CHECKSUM: 819463e6a0290f5a72f145ba7cde16e8b6ef0796
 
