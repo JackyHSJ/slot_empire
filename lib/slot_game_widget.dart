@@ -32,21 +32,16 @@ class _SlotGameWidgetState extends ConsumerState<SlotGameWidget> {
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     return Scaffold(
-      body: Image.asset(
-        'assets/images/Background/Bg1.png',
-        height: size.height, width: size.width,
-        fit: BoxFit.fill,
+      body: GameWidget(
+        game: SlotGameCenter(),
+        backgroundBuilder: (context) {
+          return Image.asset(
+            'assets/images/Background/Bg1.png',
+            height: size.height, width: size.width,
+            fit: BoxFit.fill,
+          );
+        },
       ),
-      // body: GameWidget(
-      //   game: SlotGameCenter(),
-      //   backgroundBuilder: (context) {
-      //     return Image.asset(
-      //       'assets/images/Background/Bg1.png',
-      //       height: size.height, width: size.width,
-      //       fit: BoxFit.fill,
-      //     );
-      //   },
-      // ),
     );
   }
 }

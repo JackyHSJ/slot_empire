@@ -43,7 +43,7 @@ class SlotGameCenter extends FlameGame {
     await initSpineFlutter();
 
     _loadSpinAnimate();
-    _loadGameBoard();
+    // _loadGameBoard();
     super.onLoad();
   }
 
