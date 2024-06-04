@@ -40,10 +40,12 @@ class SlotGameCenter extends FlameGame {
     //This is the slot machine!
     // slotMachine = SlotMachine();
     // world.add(slotMachine!);
-    await initSpineFlutter();
 
-    _loadSpinAnimate();
-    // _loadGameBoard();
+    /// Spin
+    // await initSpineFlutter();
+    // _loadSpinAnimate();
+    
+    _loadGameBoard();
     super.onLoad();
   }
 
