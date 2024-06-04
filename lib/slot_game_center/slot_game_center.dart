@@ -43,7 +43,7 @@ class SlotGameCenter extends FlameGame {
     // world.add(slotMachine!);
 
     /// Spin
-    await _loadSpinAnimate();
+    // await _loadSpinAnimate();
 
     _loadGameBoard();
     super.onLoad();
@@ -68,10 +68,10 @@ class SlotGameCenter extends FlameGame {
         skeletonFile: 'assets/spine/snowglobe/snowglobe-pro.json',
         scale: Vector2(0.2, 0.2),
         anchor: Anchor.center,
-        position: Vector2(0, 0)
+        position: Vector2(0, -500)
     );
     spineSnowGlobe.animationState.setAnimationByName(0, 'shake', true);
-    await add(spineSnowGlobe);
+    await world.add(spineSnowGlobe);
   }
 
   void _layoutBySize(Vector2 size) {
