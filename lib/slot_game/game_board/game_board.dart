@@ -183,6 +183,7 @@ class GameBoard extends PositionComponent {
         title: 'Bet 3',
         size: Vector2(100, 100),
         onPressed: () {
+          viewModel.updateSprite(verticalList: verticalList);
           print('order');
         }
     );

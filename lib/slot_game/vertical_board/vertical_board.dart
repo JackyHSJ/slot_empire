@@ -74,7 +74,7 @@ class VerticalBoard extends PositionComponent {
 
     if(addFallingBlocks == false) {
       gameBlockComponentList.add(gameBlockComponent);
-      addAll(gameBlockComponentList);
+      add(gameBlockComponent);
     }
 
     if (addFallingBlocks == true) {
@@ -88,6 +88,7 @@ class VerticalBoard extends PositionComponent {
       final EffectController controller = EffectController(duration: 0.4, curve: Curves.elasticInOut);
       final MoveEffect moveEffect = MoveEffect.to(animateEnd, controller);
       gameBlockComponent.add(moveEffect);
+      gameBlockComponentList.add(gameBlockComponent);
       add(gameBlockComponent);
     }
   }
@@ -105,6 +106,8 @@ class VerticalBoard extends PositionComponent {
       component: component,
       removeIndex: removeIndex
     ));
+
+    gameBlockComponentList.removeAt(removeIndex);
   }
 
 

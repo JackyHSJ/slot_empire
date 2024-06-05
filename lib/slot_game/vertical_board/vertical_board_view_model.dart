@@ -31,13 +31,17 @@ class VerticalBoardViewModel {
   }) {
     final double horizontalWidth = horizontalIndex * blockWidth;
     final double verticalHigh = verticalIndex * blockHigh;
-    return Vector2(x + GlobalValue.blockOffsetX + horizontalWidth, y + GlobalValue.blockOffsetY + verticalHigh);
+    final double resultX = x + GlobalValue.blockOffsetX + horizontalWidth;
+    final double resultY = y + GlobalValue.blockOffsetY + verticalHigh;
+    return Vector2(resultX.roundToDouble(), resultY.roundToDouble());
   }
 
   Vector2 getBlockAnimateStartVector2({
     required int horizontalIndex,
   }) {
-    final Vector2 animateStart = getVector2(x: 0 + GlobalValue.blockVector.x * horizontalIndex - 1, y: -GlobalValue.blockVector.y);
+    final double resultX = 0 + GlobalValue.blockVector.x * horizontalIndex - 1;
+    final double resultY = -GlobalValue.blockVector.y;
+    final Vector2 animateStart = getVector2(x: resultX.roundToDouble(), y: resultY.roundToDouble());
     return animateStart;
   }
 
@@ -94,8 +98,11 @@ class VerticalBoardViewModel {
   }) {
     int onCompleteSum = 0;
     for (var model in toUpdate) {
-      final Vector2 newPosition = model.spriteComponent.position + Vector2(0, GlobalValue.blockVector.y * model.dropNumber);
+      final double newPositionX = (model.spriteComponent.position.x).roundToDouble();
+      final double newPositionY = (model.spriteComponent.position.y +(GlobalValue.blockVector.y * model.dropNumber)).roundToDouble();
+      final Vector2 newPosition = Vector2(newPositionX, newPositionY);
       final EffectController controller = EffectController(duration: 0.4, curve: Curves.elasticInOut);
+      print('new position: ${newPosition}');
       final MoveEffect moveEffect = MoveEffect.to(
         newPosition,
         controller,

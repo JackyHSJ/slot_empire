@@ -7,6 +7,7 @@ import 'package:example_slot_game/extension/game_block_model_map.dart';
 import 'package:example_slot_game/extension/game_block_type.dart';
 import 'package:example_slot_game/model/game_block_model.dart';
 import 'package:example_slot_game/slot_game/horizontal_board/horizontal_board.dart';
+import 'package:example_slot_game/slot_game/single_block/single_block.dart';
 import 'package:example_slot_game/slot_game/vertical_board/vertical_board.dart';
 import 'package:flame/effects.dart';
 import 'package:flame/game.dart';
@@ -32,6 +33,7 @@ class GameBoardViewModel {
 
   _getRandom() {
     Random random = Random();
+    allVerticalGameBlockMap = [];
     for(int i = 0; i < 6; i++) {
       verticalGameBlockMap = [];
       horizontalGameBlockMap = [];
@@ -57,7 +59,7 @@ class GameBoardViewModel {
     }
   }
 
-  checkAndRemoveRewardBlock({
+  Future<void> checkAndRemoveRewardBlock({
     required List<VerticalBoard> verticalList,
     required List<HorizontalBoard> horizontalList,
   }) async {
@@ -72,8 +74,17 @@ class GameBoardViewModel {
 
     _removeHorizontal(horizontalList.single);
 
+    await Future.delayed(const Duration(seconds: 1));
+    _sortGameBlockComponentList(verticalList);
+
     print("已移除匹配方塊並更新方塊位置");
     print("stop");
+  }
+
+  _sortGameBlockComponentList(List<VerticalBoard> verticalList) {
+    for(int i = 0; i < verticalList.length; i++) {
+      verticalList[i].gameBlockComponentList.sort((a, b) => a.position.y.compareTo(b.position.y));
+    }
   }
 
   Future<void> _removeHorizontal(HorizontalBoard horizontal) async {
@@ -137,8 +148,21 @@ class GameBoardViewModel {
   updateSprite({
     required List<VerticalBoard> verticalList,
   }) {
-    allVerticalGameBlockMap.first.first.type = GameBlockType.ten;
-    verticalList.first.gameBlockComponentList.first.updateSprite(GameBlockType.ten.getBlockImgPath(1));
+    _getRandom();
+
+    for(int i = 0; i < 6; i++) {
+      verticalList[i].verticalGameBlockMap = allVerticalGameBlockMap[i];
+      for(int j = 0; j < 10; j++) {
+        final GameBlockType type = allVerticalGameBlockMap[i][j].type;
+        final single = verticalList[i].gameBlockComponentList.firstWhere((block) {
+          final blockY = block.y.roundToDouble();
+          final globalBlockY = (GlobalValue.blockVector.y * j).roundToDouble();
+          return blockY == globalBlockY;
+        });
+        single.updateSprite(type.getBlockImgPath(1));
+        // verticalList[i].gameBlockComponentList[j].updateSprite(type.getBlockImgPath(1));
+      }
+    }
   }
 
   Future<void> actionSpin({
@@ -149,6 +173,7 @@ class GameBoardViewModel {
     if(spinType == SpinType.stop || spinType == SpinType.none) {
       await startSpin(verticalList: verticalList, horizontalList: horizontalList);
     }
+    updateSprite(verticalList: verticalList);
     await _getActionDelayTime(flashBtnEnable);
 
     if(spinType == SpinType.spin) {
@@ -170,7 +195,7 @@ class GameBoardViewModel {
     required List<HorizontalBoard> horizontalList,
   }) async {
     await actionSpin(verticalList: verticalList, horizontalList: horizontalList, flashBtnEnable: _flashBtnEnable);
-    checkAndRemoveRewardBlock(verticalList: verticalList, horizontalList: horizontalList);
+    await checkAndRemoveRewardBlock(verticalList: verticalList, horizontalList: horizontalList);
   }
 
   playAuto({
@@ -180,8 +205,8 @@ class GameBoardViewModel {
     _autoBtnEnable = !_autoBtnEnable;
     while(_autoBtnEnable) {
       await actionSpin(verticalList: verticalList, horizontalList: horizontalList, flashBtnEnable: _flashBtnEnable);
-      checkAndRemoveRewardBlock(verticalList: verticalList, horizontalList: horizontalList);
-      await Future.delayed(const Duration(seconds: 2));
+      await checkAndRemoveRewardBlock(verticalList: verticalList, horizontalList: horizontalList);
+      await Future.delayed(const Duration(seconds: 1));
     }
   }
 

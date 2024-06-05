@@ -6,6 +6,7 @@ import 'package:example_slot_game/const/global_data.dart';
 import 'package:example_slot_game/slot_game/game_board/game_board.dart';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
+import 'package:flame/input.dart';
 import 'package:flame_spine/flame_spine.dart';
 import 'package:flutter/material.dart';
 
@@ -43,8 +44,8 @@ class SlotGameCenter extends FlameGame {
     // world.add(slotMachine!);
 
     /// Spin
-    // await _loadSpinAnimate();
-
+    await _loadSpinAnimate();
+    
     _loadGameBoard();
     super.onLoad();
   }
@@ -105,7 +106,7 @@ class SlotGameCenter extends FlameGame {
 
   @override
   void onDetach() {
-    spineSnowGlobe.dispose();
+    // spineSnowGlobe.dispose();
     super.onDetach();
   }
 }
