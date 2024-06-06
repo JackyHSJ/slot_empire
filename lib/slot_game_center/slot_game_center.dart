@@ -44,8 +44,8 @@ class SlotGameCenter extends FlameGame {
     // world.add(slotMachine!);
 
     /// Spin
-    await _loadSpinAnimate();
-    
+    await loadSpinAnimate();
+
     _loadGameBoard();
     super.onLoad();
   }
@@ -59,20 +59,40 @@ class SlotGameCenter extends FlameGame {
   }
 
   _loadGameBoard() async {
-    final GameBoard gameBoard = GameBoard(currentLayoutMode: currentLayoutMode);
+    final GameBoard gameBoard = GameBoard(currentLayoutMode: currentLayoutMode, slotGameCenter: this);
     world.add(gameBoard);
   }
 
-  _loadSpinAnimate() async {
+  loadSpinAnimate() async {
     spineSnowGlobe = await SpineComponent.fromAssets(
-        atlasFile: 'assets/spine/snowglobe/snowglobe-pro.atlas',
-        skeletonFile: 'assets/spine/snowglobe/snowglobe-pro.json',
-        scale: Vector2(0.2, 0.2),
-        anchor: Anchor.center,
-        position: Vector2(0, -500)
+      // atlasFile: 'assets/spine/test/spineTest.atlas',
+      // skeletonFile: 'assets/spine/test/sym_ha.json',
+      atlasFile: 'assets/spine/snowglobe/snowglobe-pro.atlas',
+      skeletonFile: 'assets/spine/snowglobe/snowglobe-pro.json',
+        // scale: Vector2(1, 1),
+      scale: Vector2(0.2, 0.2),
+      anchor: Anchor.center,
+      position: Vector2(0, -500)
     );
+    // final slots = spineSnowGlobe.skeleton.getSlots();
+    // print('slots: ${slots.length}');
+
+    // spineSnowGlobe.skeleton.setAttachment('H1_1', 'Wild_1');
+    // spineSnowGlobe.animationState.setListener((EventType type, TrackEntry trackEntry, Event? event) {
+    //   if (type == EventType.complete) {
+    //     print("Animation '${trackEntry.getAnimation().getName()}' completed.");
+    //   } else if (type == EventType.start) {
+    //     print("Animation '${trackEntry.getAnimation().getName()}' started.");
+    //   } else if (type == EventType.event) {
+    //     print("Event '${event?.getData().getName()}' occurred at animation '${trackEntry.getAnimation().getName()}'.");
+    //   }
+    // });
     spineSnowGlobe.animationState.setAnimationByName(0, 'shake', true);
     await world.add(spineSnowGlobe);
+  }
+
+  removeSpinAnimate() {
+    world.remove(spineSnowGlobe);
   }
 
   void _layoutBySize(Vector2 size) {

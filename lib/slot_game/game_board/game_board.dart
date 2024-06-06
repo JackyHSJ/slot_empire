@@ -7,22 +7,26 @@ import 'package:example_slot_game/slot_game/game_board/game_board_view_model.dar
 import 'package:example_slot_game/slot_game/game_board/setting_menu/setting_menu.dart';
 import 'package:example_slot_game/slot_game/horizontal_board/horizontal_board.dart';
 import 'package:example_slot_game/slot_game/vertical_board/vertical_board.dart';
+import 'package:example_slot_game/slot_game_center/slot_game_center.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame/input.dart';
 import 'package:flame/layout.dart';
+import 'package:flame_spine/flame_spine.dart';
 import 'package:flutter/material.dart';
 
 class GameBoard extends PositionComponent {
   GameBoard({
-    required this.currentLayoutMode
+    required this.currentLayoutMode,
+    required this.slotGameCenter,
   }): super(priority: 1);
 
   late GameBoardViewModel viewModel;
   List<VerticalBoard> verticalList = [];
   List<HorizontalBoard> horizontalList = [];
 
+  SlotGameCenter slotGameCenter;
   LayoutMode currentLayoutMode;
   final SettingMenu settingMenu = SettingMenu();
 
@@ -183,7 +187,8 @@ class GameBoard extends PositionComponent {
         title: 'Bet 3',
         size: Vector2(100, 100),
         onPressed: () {
-          viewModel.updateSprite(verticalList: verticalList);
+          slotGameCenter.removeSpinAnimate();
+          // viewModel.updateSprite(verticalList: verticalList);
           print('order');
         }
     );

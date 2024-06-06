@@ -99,15 +99,43 @@ class VerticalBoard extends PositionComponent {
     super.onRemove();
   }
 
-  void removeBlocks({
-    required int removeIndex
+  removeBlockEffect({
+    required List<int> removeIndexList
   }) {
-    removeWhere((component) => viewModel.removeBlocks(
-      component: component,
-      removeIndex: removeIndex
-    ));
+    _turnAllBlockDark();
+    if(removeIndexList.isEmpty) return;
+    removeIndexList.forEach((index){
+      final singleBlock = gameBlockComponentList.firstWhere((block) {
+        final double blockY = block.position.y.roundToDouble();
+        final double removeBlockY = (GlobalValue.blockVector.y * index).roundToDouble();
+        return blockY == removeBlockY;
+      });
+      singleBlock.turnLight();
+    });
+  }
 
-    gameBlockComponentList.removeAt(removeIndex);
+  turnAllBlockLight() {
+    gameBlockComponentList.forEach((singleBlock){
+      singleBlock.turnLight();
+    });
+  }
+
+  _turnAllBlockDark() {
+    gameBlockComponentList.forEach((singleBlock){
+      singleBlock.turnDark();
+    });
+  }
+
+  void removeBlocks({
+    required List<int> removeIndexList
+  }) {
+    removeIndexList.forEach((removeIndex) {
+      removeWhere((component) => viewModel.removeBlocks(
+          component: component,
+          removeIndex: removeIndex
+      ));
+      gameBlockComponentList.removeAt(removeIndex);
+    });
   }
 
 

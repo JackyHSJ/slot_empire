@@ -99,13 +99,15 @@ class GameBoardViewModel {
     required List<GameBlockType> rewardTypeList
   }) async {
     final List<GameBlockModel> verticalGameBlockMap = vertical.verticalGameBlockMap;
-    for(int i = verticalGameBlockMap.length - 1; i >= 5; i--) {
-      final GameBlockType type = verticalGameBlockMap[i].type;
-      final bool isContain = rewardTypeList.contains(type);
-      if(isContain) {
-        vertical.removeBlocks(removeIndex: i);
-      }
-    }
+    final List<int> indicesToRemove = List<int>.generate(verticalGameBlockMap.length, (i) => i)
+        .where((i) => i >= 5 && rewardTypeList.contains(verticalGameBlockMap[i].type))
+        .toList();
+
+    final List<int> list = indicesToRemove.reversed.toList();
+    // vertical.removeBlockEffect(removeIndexList: list);
+    // await Future.delayed(const Duration(milliseconds: 500)); // 動效
+    vertical.removeBlocks(removeIndexList: list);
+    // vertical.turnAllBlockLight();
     await Future.delayed(const Duration(milliseconds: 100));
     vertical.updateFallingBlocks();
   }
@@ -206,7 +208,7 @@ class GameBoardViewModel {
     while(_autoBtnEnable) {
       await actionSpin(verticalList: verticalList, horizontalList: horizontalList, flashBtnEnable: _flashBtnEnable);
       await checkAndRemoveRewardBlock(verticalList: verticalList, horizontalList: horizontalList);
-      await Future.delayed(const Duration(seconds: 1));
+      await Future.delayed(const Duration(seconds: 2));
     }
   }
 

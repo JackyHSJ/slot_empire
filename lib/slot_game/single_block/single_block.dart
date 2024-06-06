@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:example_slot_game/const/global_value.dart';
 import 'package:example_slot_game/slot_game/single_block/single_block_view_model.dart';
 import 'package:flame/components.dart';
+import 'package:flutter/material.dart';
 
 class SingleBlock extends SpriteComponent {
   SingleBlock({
@@ -52,6 +53,18 @@ class SingleBlock extends SpriteComponent {
   void updateSprite(String imagePath) async {
     Sprite newSprite = await Sprite.load(imagePath);
     sprite = newSprite;  // 更新 sprite 属性
+  }
+
+  void turnDark() {
+    paint.color = Colors.black.withOpacity(0.5);
+  }
+
+  void turnLight() {
+    paint.color = Colors.white.withOpacity(1);
+  }
+
+  void playRewardEffect() {
+
   }
 }
 
