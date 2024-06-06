@@ -68,9 +68,11 @@ class GameBoardViewModel {
         .where((map) => map.value >= 5) /// 暫時
         .map((rewardBlocks) => rewardBlocks.key).toList();
 
+    List<Future> removeVerticalFutures = [];
     for(int i = 0; i < verticalList.length; i++) {
-      _removeVertical(verticalList[i], rewardTypeList: rewardTypeList);
+      removeVerticalFutures.add(_removeVertical(verticalList[i], rewardTypeList: rewardTypeList));
     }
+    await Future.wait(removeVerticalFutures);
 
     _removeHorizontal(horizontalList.single);
 
@@ -104,10 +106,10 @@ class GameBoardViewModel {
         .toList();
 
     final List<int> list = indicesToRemove.reversed.toList();
-    // vertical.removeBlockEffect(removeIndexList: list);
-    // await Future.delayed(const Duration(milliseconds: 500)); // 動效
+    vertical.removeBlockEffect(removeIndexList: list);
+    await Future.delayed(const Duration(milliseconds: 2000)); // 動效
     vertical.removeBlocks(removeIndexList: list);
-    // vertical.turnAllBlockLight();
+    vertical.turnAllBlockLight();
     await Future.delayed(const Duration(milliseconds: 100));
     vertical.updateFallingBlocks();
   }
