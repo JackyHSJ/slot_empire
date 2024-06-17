@@ -67,9 +67,15 @@ flutter:
     - assets/images/Game Blocks/
     - assets/images/Button BG/
     - assets/images/Background/
-    - assets/spine/snowglobe/
     - assets/images/marquee/
     - assets/images/navigation/
     - assets/images/icons/
     - assets/images/GameTXT/
     - assets/spine/test/
+#    spine
+#    anim_1, anim_2, anim_3, anim_4
+    - assets/spine/Character/
+
+    - assets/spine/snowglobe/
+    - assets/spine/test/
+    - assets/spine/win_spine/

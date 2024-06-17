@@ -20,7 +20,7 @@ class GameBoard extends PositionComponent {
   GameBoard({
     required this.currentLayoutMode,
     required this.slotGameCenter,
-  }): super(priority: 1);
+  }): super(priority: 3);
 
   late GameBoardViewModel viewModel;
   List<VerticalBoard> verticalList = [];

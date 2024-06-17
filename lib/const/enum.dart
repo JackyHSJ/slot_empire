@@ -15,9 +15,9 @@ enum GameBlockType {
 enum LayoutMode {
   //尚未設定。
   none,
-  //橫式
+  /// 橫式
   landscape,
-  //直式
+  /// 直式
   portrait
 }
 

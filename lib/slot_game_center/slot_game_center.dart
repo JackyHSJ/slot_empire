@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:example_slot_game/const/enum.dart';
 import 'package:example_slot_game/const/global_data.dart';
 import 'package:example_slot_game/slot_game/game_board/game_board.dart';
+import 'package:example_slot_game/slot_game_center/background/background_board.dart';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame/input.dart';
@@ -43,6 +44,9 @@ class SlotGameCenter extends FlameGame {
     // slotMachine = SlotMachine();
     // world.add(slotMachine!);
 
+    /// load background
+    _loadBackground();
+
     /// Spin
     await loadSpinAnimate();
 
@@ -58,6 +62,11 @@ class SlotGameCenter extends FlameGame {
     super.onGameResize(size);
   }
 
+  _loadBackground() async {
+    final BackgroundBoard backgroundBoard = BackgroundBoard(currentLayoutMode: currentLayoutMode, boardSize: size);
+    world.add(backgroundBoard);
+  }
+
   _loadGameBoard() async {
     final GameBoard gameBoard = GameBoard(currentLayoutMode: currentLayoutMode, slotGameCenter: this);
     world.add(gameBoard);
@@ -65,14 +74,12 @@ class SlotGameCenter extends FlameGame {
 
   loadSpinAnimate() async {
     spineSnowGlobe = await SpineComponent.fromAssets(
-      // atlasFile: 'assets/spine/test/spineTest.atlas',
-      // skeletonFile: 'assets/spine/test/sym_ha.json',
-      atlasFile: 'assets/spine/snowglobe/snowglobe-pro.atlas',
-      skeletonFile: 'assets/spine/snowglobe/snowglobe-pro.json',
-        // scale: Vector2(1, 1),
-      scale: Vector2(0.2, 0.2),
+      atlasFile: 'assets/spine/Character/Character.atlas',
+      skeletonFile: 'assets/spine/Character/Character.json',
+      scale: Vector2(1.2, 1.2),
       anchor: Anchor.center,
-      position: Vector2(0, -500)
+      position: Vector2(0, -350),
+      priority: 2
     );
     // final slots = spineSnowGlobe.skeleton.getSlots();
     // print('slots: ${slots.length}');
@@ -87,7 +94,7 @@ class SlotGameCenter extends FlameGame {
     //     print("Event '${event?.getData().getName()}' occurred at animation '${trackEntry.getAnimation().getName()}'.");
     //   }
     // });
-    spineSnowGlobe.animationState.setAnimationByName(0, 'shake', true);
+    spineSnowGlobe.animationState.setAnimationByName(0, 'anim_1', true);
     await world.add(spineSnowGlobe);
   }
 
@@ -121,7 +128,7 @@ class SlotGameCenter extends FlameGame {
 
   /// 重新整理介面，根據 layout 模式。
   void _refreshUIsByLayout(LayoutMode layoutMode) {
-    // Todo
+    _loadBackground();
   }
 
   @override
