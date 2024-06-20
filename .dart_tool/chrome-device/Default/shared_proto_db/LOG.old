@@ -1,4 +1,7 @@
-2024/06/17-14:25:51.103 f903 Reusing MANIFEST /private/var/folders/vw/cz7tj23s0m7_xljmhgj_k8c00000gn/T/flutter_tools.JI0MQa/flutter_tools_chrome_device.YtRGc0/Default/shared_proto_db/MANIFEST-000001
-2024/06/17-14:25:51.103 f903 Recovering log #4
-2024/06/17-14:25:51.104 f903 Reusing old log /private/var/folders/vw/cz7tj23s0m7_xljmhgj_k8c00000gn/T/flutter_tools.JI0MQa/flutter_tools_chrome_device.YtRGc0/Default/shared_proto_db/000004.log 
-2024/06/17-14:25:51.105 f903 Delete type=0 #3
+2024/06/19-16:20:54.124 8603 Reusing MANIFEST /private/var/folders/vw/cz7tj23s0m7_xljmhgj_k8c00000gn/T/flutter_tools.URrL68/flutter_tools_chrome_device.kjYpFW/Default/shared_proto_db/MANIFEST-000001
+2024/06/19-16:20:54.125 8603 Recovering log #13
+2024/06/19-16:20:54.125 8603 Reusing old log /private/var/folders/vw/cz7tj23s0m7_xljmhgj_k8c00000gn/T/flutter_tools.URrL68/flutter_tools_chrome_device.kjYpFW/Default/shared_proto_db/000013.log 
+2024/06/19-16:20:54.125 8603 Delete type=0 #7
+2024/06/19-16:20:54.125 8603 Delete type=0 #4
+2024/06/19-16:20:54.125 8603 Delete type=0 #10
+2024/06/19-16:20:54.125 8603 Delete type=0 #3

@@ -68,19 +68,33 @@ class GameBoardViewModel {
         .where((map) => map.value >= 5) /// 暫時
         .map((rewardBlocks) => rewardBlocks.key).toList();
 
+    /// 全部轉暗
+    _turnAllBlockTheme(verticalList, enableLight: false);
+
     List<Future> removeVerticalFutures = [];
     for(int i = 0; i < verticalList.length; i++) {
       removeVerticalFutures.add(_removeVertical(verticalList[i], rewardTypeList: rewardTypeList));
     }
     await Future.wait(removeVerticalFutures);
-
     _removeHorizontal(horizontalList.single);
+
+    /// 全部亮起
+    _turnAllBlockTheme(verticalList, enableLight: true);
 
     await Future.delayed(const Duration(seconds: 1));
     _sortGameBlockComponentList(verticalList);
 
     print("已移除匹配方塊並更新方塊位置");
     print("stop");
+  }
+
+  _turnAllBlockTheme(List<VerticalBoard> verticalList, {
+    required bool enableLight
+  }) {
+    verticalList.forEach((vertical) {
+      if(enableLight == true) vertical.turnAllBlockLight();
+      if(enableLight == false) vertical.turnAllBlockDark();
+    });
   }
 
   _sortGameBlockComponentList(List<VerticalBoard> verticalList) {
@@ -106,10 +120,10 @@ class GameBoardViewModel {
         .toList();
 
     final List<int> list = indicesToRemove.reversed.toList();
-    vertical.removeBlockEffect(removeIndexList: list);
-    await Future.delayed(const Duration(milliseconds: 2000)); // 動效
+    await vertical.removeBlockEffect(removeIndexList: list);
+    await vertical.removeDestroyEffect(removeIndexList: list);
     vertical.removeBlocks(removeIndexList: list);
-    vertical.turnAllBlockLight();
+
     await Future.delayed(const Duration(milliseconds: 100));
     vertical.updateFallingBlocks();
   }
@@ -210,7 +224,7 @@ class GameBoardViewModel {
     while(_autoBtnEnable) {
       await actionSpin(verticalList: verticalList, horizontalList: horizontalList, flashBtnEnable: _flashBtnEnable);
       await checkAndRemoveRewardBlock(verticalList: verticalList, horizontalList: horizontalList);
-      await Future.delayed(const Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 1));
     }
   }
 

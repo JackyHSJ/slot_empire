@@ -86,6 +86,13 @@
             </list>
           </value>
         </entry>
+        <entry key="flame_riverpod">
+          <value>
+            <list>
+              <option value="$PROJECT_DIR$/../.pub-cache/hosted/pub.dev/flame_riverpod-5.4.2/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="flame_spine">
           <value>
             <list>
@@ -437,6 +444,7 @@
       <root url="file://$PROJECT_DIR$/../.pub-cache/hosted/pub.dev/ffi-2.1.2/lib" />
       <root url="file://$PROJECT_DIR$/../.pub-cache/hosted/pub.dev/flame-1.18.0/lib" />
       <root url="file://$PROJECT_DIR$/../.pub-cache/hosted/pub.dev/flame_rive-1.10.2/lib" />
+      <root url="file://$PROJECT_DIR$/../.pub-cache/hosted/pub.dev/flame_riverpod-5.4.2/lib" />
       <root url="file://$PROJECT_DIR$/../.pub-cache/hosted/pub.dev/flame_spine-0.2.1/lib" />
       <root url="file://$PROJECT_DIR$/../.pub-cache/hosted/pub.dev/flutter_lints-2.0.3/lib" />
       <root url="file://$PROJECT_DIR$/../.pub-cache/hosted/pub.dev/flutter_riverpod-2.5.1/lib" />

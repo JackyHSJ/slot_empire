@@ -26,3 +26,10 @@ enum SpinType {
   stop,
   none
 }
+
+enum SlotGameStatus {
+  init, // 使用者正在初始狀態
+  spin,
+  stop,
+  win,
+}

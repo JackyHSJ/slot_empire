@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:example_slot_game/const/enum.dart';
 import 'package:example_slot_game/const/global_value.dart';
 import 'package:example_slot_game/extension/game_block_type.dart';
+import 'package:example_slot_game/provider/provider.dart';
+import 'package:example_slot_game/provider/user_info_provider.dart';
 import 'package:example_slot_game/slot_game/game_board/game_board_view_model.dart';
 import 'package:example_slot_game/slot_game/game_board/setting_menu/setting_menu.dart';
 import 'package:example_slot_game/slot_game/horizontal_board/horizontal_board.dart';
@@ -13,10 +15,11 @@ import 'package:flame/effects.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame/input.dart';
 import 'package:flame/layout.dart';
+import 'package:flame_riverpod/flame_riverpod.dart';
 import 'package:flame_spine/flame_spine.dart';
 import 'package:flutter/material.dart';
 
-class GameBoard extends PositionComponent {
+class GameBoard extends PositionComponent with RiverpodComponentMixin {
   GameBoard({
     required this.currentLayoutMode,
     required this.slotGameCenter,
@@ -187,9 +190,11 @@ class GameBoard extends PositionComponent {
         title: 'Bet 3',
         size: Vector2(100, 100),
         onPressed: () {
-          slotGameCenter.removeSpinAnimate();
           // viewModel.updateSprite(verticalList: verticalList);
-          print('order');
+          viewModel.allVerticalGameBlockMap;
+          ref.read(userUtilProvider.notifier).setDataToPrefs(slotGameStatus: SlotGameStatus.win);
+          final res = ref.read(userInfoProvider).slotGameStatus;
+          print('order: ${res}');
         }
     );
   }

@@ -56,7 +56,8 @@ class HorizontalBoard extends PositionComponent {
   Future<void> _loadGameBlock(int index, {
     bool addFallingBlocks = false
   }) async {
-    final String imgPath = horizontalGameBlockMap[index].getBlockImgPath;
+    final GameBlockModel gameBlockModel = horizontalGameBlockMap[index];
+    final String imgPath = gameBlockModel.getBlockImgPath;
     final Sprite gameBlockSprite = await Sprite.load(imgPath);
 
     // Calculate the final position

@@ -3,21 +3,24 @@ import 'dart:ui';
 
 import 'package:example_slot_game/const/enum.dart';
 import 'package:example_slot_game/const/global_data.dart';
+import 'package:example_slot_game/provider/provider.dart';
 import 'package:example_slot_game/slot_game/game_board/game_board.dart';
 import 'package:example_slot_game/slot_game_center/background/background_board.dart';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame/input.dart';
+import 'package:flame_riverpod/flame_riverpod.dart';
 import 'package:flame_spine/flame_spine.dart';
 import 'package:flutter/material.dart';
 
-class SlotGameCenter extends FlameGame {
+class SlotGameCenter extends FlameGame with RiverpodGameMixin {
   SlotGameCenter(): super();
 
   late Function stateCallbackHandler;
   //當前使用的 layout mode.
   LayoutMode _layoutMode = LayoutMode.none;
   late SpineComponent spineSnowGlobe;
+  late SpineComponent spineTest;
 
   /// 當前的排版模式。
   LayoutMode get currentLayoutMode {
@@ -48,10 +51,25 @@ class SlotGameCenter extends FlameGame {
     _loadBackground();
 
     /// Spin
+    // await _loadTest();
     await loadSpinAnimate();
 
     _loadGameBoard();
+
     super.onLoad();
+  }
+
+  _loadTest() async {
+    spineTest = await SpineComponent.fromAssets(
+      atlasFile: 'assets/spine/snowglobe/snowglobe-pro.atlas',
+      skeletonFile: 'assets/spine/snowglobe/snowglobe-pro.json',
+      scale: Vector2(0.2, 0.2),
+      anchor: Anchor.center,
+      // position: Vector2(0, -350),
+      priority: 4
+    );
+    spineTest.animationState.setAnimationByName(0, 'shake', true);
+    await world.add(spineTest);
   }
 
   @override
@@ -133,7 +151,30 @@ class SlotGameCenter extends FlameGame {
 
   @override
   void onDetach() {
-    // spineSnowGlobe.dispose();
+    spineSnowGlobe.dispose();
     super.onDetach();
+  }
+
+  @override
+  void onMount() {
+    addToGameWidgetBuild(() => ref.listen(userInfoProvider, (provider, listener) {
+      switch (listener.slotGameStatus) {
+        case SlotGameStatus.init:
+          print('SlotGameStatus init');
+          break;
+        case SlotGameStatus.spin:
+          print('SlotGameStatus spin');
+          break;
+        case SlotGameStatus.stop:
+          print('SlotGameStatus stop');
+          break;
+        case SlotGameStatus.win:
+          print('SlotGameStatus win');
+          break;
+        default:
+          break;
+      }
+    }));
+    super.onMount();
   }
 }

@@ -74,6 +74,12 @@
       "languageVersion": "3.4"
     },
     {
+      "name": "flame_riverpod",
+      "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/flame_riverpod-5.4.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
       "name": "flame_spine",
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/flame_spine-0.2.1",
       "packageUri": "lib/",
@@ -368,7 +374,7 @@
       "languageVersion": "3.4"
     }
   ],
-  "generated": "2024-06-17T05:14:50.127701Z",
+  "generated": "2024-06-19T08:31:46.112536Z",
   "generator": "pub",
   "generatorVersion": "3.4.1",
   "flutterRoot": "file:///Users/user/fvm/versions/3.22.1",

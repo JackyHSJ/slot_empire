@@ -11,6 +11,7 @@ import 'package:example_slot_game/slot_game/single_block/single_block.dart';
 import 'package:example_slot_game/slot_game/vertical_board/vertical_board_view_model.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
+import 'package:flame/events.dart';
 import 'package:flutter/material.dart';
 
 class VerticalBoard extends PositionComponent {
@@ -49,8 +50,9 @@ class VerticalBoard extends PositionComponent {
   Future<void> _loadGameBlock(int verticalIndex, {
     bool addFallingBlocks = false
   }) async {
-    final num coverNum = verticalGameBlockMap[verticalIndex].coverNumber;
-    final String imgPath = verticalGameBlockMap[verticalIndex].getBlockImgPath;
+    final GameBlockModel gameBlockModel = verticalGameBlockMap[verticalIndex];
+    final num coverNum = gameBlockModel.coverNumber;
+    final String imgPath = gameBlockModel.getBlockImgPath;
     final Sprite gameBlockSprite = await Sprite.load(imgPath);
 
     // Calculate the final position
@@ -99,19 +101,39 @@ class VerticalBoard extends PositionComponent {
     super.onRemove();
   }
 
-  removeBlockEffect({
+  /// 中獎檢查, 為中獎轉暗, 中獎轉亮
+  Future<void> removeBlockEffect({
     required List<int> removeIndexList
-  }) {
-    _turnAllBlockDark();
-    if(removeIndexList.isEmpty) return;
-    removeIndexList.forEach((index){
+  }) async {
+    if (removeIndexList.isEmpty) return;
+    List<Future> futures = [];
+    for (var index in removeIndexList) {
       final singleBlock = gameBlockComponentList.firstWhere((block) {
         final double blockY = block.position.y.roundToDouble();
         final double removeBlockY = (GlobalValue.blockVector.y * index).roundToDouble();
         return blockY == removeBlockY;
       });
-      singleBlock.turnLight();
-    });
+      futures.add(singleBlock.loadBlockAnimate());
+      // futures.add(singleBlock.loadDestroyAnimate());
+    }
+    await Future.wait(futures);
+  }
+
+  removeDestroyEffect({
+    required List<int> removeIndexList
+  }) async {
+    if (removeIndexList.isEmpty) return;
+    List<Future> futures = [];
+    for (var index in removeIndexList) {
+      final singleBlock = gameBlockComponentList.firstWhere((block) {
+        final double blockY = block.position.y.roundToDouble();
+        final double removeBlockY = (GlobalValue.blockVector.y * index).roundToDouble();
+        return blockY == removeBlockY;
+      });
+      futures.add(singleBlock.turnTransparent());
+      futures.add(singleBlock.loadDestroyAnimate());
+    }
+    await Future.wait(futures);
   }
 
   turnAllBlockLight() {
@@ -120,7 +142,7 @@ class VerticalBoard extends PositionComponent {
     });
   }
 
-  _turnAllBlockDark() {
+  turnAllBlockDark() {
     gameBlockComponentList.forEach((singleBlock){
       singleBlock.turnDark();
     });

@@ -1,13 +1,8 @@
-import 'dart:async';
 
-import 'package:after_layout/after_layout.dart';
-import 'package:example_slot_game/base_view_model.dart';
-import 'package:example_slot_game/const/global_data.dart';
-import 'package:example_slot_game/slot_game/slot_game.dart';
+import 'package:example_slot_game/provider/provider.dart';
 import 'package:example_slot_game/slot_game_center/slot_game_center.dart';
-import 'package:flame/game.dart';
+import 'package:flame_riverpod/flame_riverpod.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SlotGameWidget extends ConsumerStatefulWidget {
@@ -31,7 +26,8 @@ class _SlotGameWidgetState extends ConsumerState<SlotGameWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: GameWidget(
+      body: RiverpodAwareGameWidget(
+        key: gameWidgetKey,
         game: SlotGameCenter(),
       ),
     );

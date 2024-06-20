@@ -1,0 +1,21 @@
+Ctrl_Panel 底板 #000000 50%
+直版 高 350px
+橫版 高 170px
+附帶一個 Ctrl_BG(Mask) 檔案,備用
+
+Ctrl_Line
+底板上的分隔線
+直版 直接放上即可
+橫板 90度轉直,長度20%
+
+BetList_BG
+選擇 Bet 時的展開背板
+320寬x420高 直橫版相同 
+
+BetList_Choose
+選擇 Bet 時的提示框
+100寬x80高
+
+BetList_Line
+裝飾用分隔線 寬2px
+邊緣距離 9px 內部 3x5 均分即可

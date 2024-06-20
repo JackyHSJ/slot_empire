@@ -35,14 +35,17 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-  flutter_riverpod: ^2.3.6
+  flutter_riverpod: 2.5.1
   after_layout: ^1.2.0
   page_transition: ^2.0.9
   fluttertoast: ^8.2.2
-  flame: ^1.15.0
+  flame: 1.18.0
   flame_spine: 0.2.1
   flame_rive: 1.10.2
   url_launcher: 6.1.14
+  flame_riverpod: 5.4.2
+  path: ^1.9.0
+
 #  flutter_inappwebview: 6.0.0
 
 dev_dependencies:
@@ -71,10 +74,15 @@ flutter:
     - assets/images/navigation/
     - assets/images/icons/
     - assets/images/GameTXT/
-    - assets/spine/test/
-#    spine
+    - assets/images/Common_Item/
+
+    #    spine
 #    anim_1, anim_2, anim_3, anim_4
     - assets/spine/Character/
+
+    - assets/spine/BG/MainGame/
+    - assets/spine/BG/MainGame/
+    - assets/spine/export/
 
     - assets/spine/snowglobe/
     - assets/spine/test/
