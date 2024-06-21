@@ -1,5 +1,6 @@
 
 import 'package:example_slot_game/const/enum.dart';
+import 'package:example_slot_game/model/res/slot/slot_res.dart';
 import 'package:example_slot_game/model/user_info_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -30,6 +31,9 @@ class UserNotifier extends StateNotifier<UserInfoModel> {
     try {
       final UserInfoModel userInfo = UserInfoModel(
         slotGameStatus: slotGameStatus ?? state.slotGameStatus,
+
+        /// API
+        slotRes: state.slotRes,
       );
       state = userInfo;
     } catch (e) {
@@ -44,6 +48,17 @@ class UserNotifier extends StateNotifier<UserInfoModel> {
     } catch (e) {
       print('clear UserInfo error: $e');
       throw Exception('clear UserInfo error: $e');
+    }
+  }
+
+  /// load slot 時調用更新資料
+  Future<void> loadSlot(SlotRes slotRes) async {
+    try {
+      final copy = state.copyWith(slotRes: slotRes);
+      state = copy;
+    } catch (e) {
+      print('loadMemberInfo error: $e');
+      throw Exception('loadMemberInfo error: $e');
     }
   }
 }

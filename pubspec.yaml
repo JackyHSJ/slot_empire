@@ -45,6 +45,8 @@ dependencies:
   url_launcher: 6.1.14
   flame_riverpod: 5.4.2
   path: ^1.9.0
+  json_annotation: ^4.9.0
+  encrypt: ^5.0.3
 
 #  flutter_inappwebview: 6.0.0
 

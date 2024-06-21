@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:after_layout/after_layout.dart';
 import 'package:example_slot_game/base_view_model.dart';
 import 'package:example_slot_game/const/global_data.dart';
+import 'package:example_slot_game/launch/launch_view_model.dart';
 import 'package:example_slot_game/slot_game_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,13 +17,17 @@ class Launch extends ConsumerStatefulWidget {
 }
 
 class _LaunchState extends ConsumerState<Launch> with AfterLayoutMixin {
+  late LaunchViewModel viewModel;
+
   @override
   void initState() {
+    viewModel = LaunchViewModel(ref: ref);
     super.initState();
   }
 
   @override
   FutureOr<void> afterFirstLayout(BuildContext context) {
+    viewModel.afterFirstLayout();
     BaseViewModel.pushAndRemoveUntil(context, const SlotGameWidget());
   }
 
@@ -37,7 +42,7 @@ class _LaunchState extends ConsumerState<Launch> with AfterLayoutMixin {
       onWillPop: () async {
         return false;
       },
-      child: Scaffold(
+      child: const Scaffold(
         appBar: null,
         resizeToAvoidBottomInset: false,
         body: Center(
