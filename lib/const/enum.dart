@@ -2,13 +2,15 @@
 
 enum GameBlockType {
   blockJ, blockQ, blockK, blockA,
-  king,
   ten,
   totemBird,
   totemFace,
   totemGrass,
   totemKing,
   totemDoll,
+  wild,
+  scatter,
+  none
 }
 
 /// 遊戲排版模式。
@@ -21,15 +23,23 @@ enum LayoutMode {
   portrait
 }
 
+@Deprecated('即將廢除')
 enum SpinType {
   spin,
   stop,
   none
 }
 
-enum SlotGameStatus {
+enum SlotStatus {
   init, // 使用者正在初始狀態
   spin,
   stop,
   win,
+}
+
+
+
+enum SlotGameStatus {
+  mainGame, // 使用者正在初始狀態
+  freeGame,
 }

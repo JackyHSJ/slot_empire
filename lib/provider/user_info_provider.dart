@@ -16,7 +16,8 @@ class UserNotifier extends StateNotifier<UserInfoModel> {
   Future<void> loadDataPrefs() async {
     try {
       final UserInfoModel userInfo = UserInfoModel(
-        slotGameStatus: SlotGameStatus.init
+        slotStatus: SlotStatus.init,
+        slotGameStatus: SlotGameStatus.mainGame,
       );
       state = userInfo;
     } catch (e) {
@@ -26,14 +27,13 @@ class UserNotifier extends StateNotifier<UserInfoModel> {
   }
 
   Future<void> setDataToPrefs({
+    SlotStatus? slotStatus,
     SlotGameStatus? slotGameStatus,
   }) async {
     try {
       final UserInfoModel userInfo = UserInfoModel(
+        slotStatus: slotStatus ?? state.slotStatus,
         slotGameStatus: slotGameStatus ?? state.slotGameStatus,
-
-        /// API
-        slotRes: state.slotRes,
       );
       state = userInfo;
     } catch (e) {
@@ -48,17 +48,6 @@ class UserNotifier extends StateNotifier<UserInfoModel> {
     } catch (e) {
       print('clear UserInfo error: $e');
       throw Exception('clear UserInfo error: $e');
-    }
-  }
-
-  /// load slot 時調用更新資料
-  Future<void> loadSlot(SlotRes slotRes) async {
-    try {
-      final copy = state.copyWith(slotRes: slotRes);
-      state = copy;
-    } catch (e) {
-      print('loadMemberInfo error: $e');
-      throw Exception('loadMemberInfo error: $e');
     }
   }
 }

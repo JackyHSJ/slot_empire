@@ -2,18 +2,23 @@
 import 'dart:math';
 
 import 'package:example_slot_game/const/enum.dart';
+import 'package:example_slot_game/const/global_cache.dart';
 import 'package:example_slot_game/const/global_value.dart';
-import 'package:example_slot_game/extension/game_block_model_map.dart';
 import 'package:example_slot_game/extension/game_block_type.dart';
+import 'package:example_slot_game/extension/string.dart';
 import 'package:example_slot_game/model/game_block_model.dart';
+import 'package:example_slot_game/model/res/slot/detail_list_info/detail_list_info.dart';
+import 'package:example_slot_game/model/res/slot/round_list_info/round_list_info.dart';
+import 'package:example_slot_game/model/res/slot/slot_res.dart';
 import 'package:example_slot_game/slot_game/horizontal_board/horizontal_board.dart';
-import 'package:example_slot_game/slot_game/single_block/single_block.dart';
 import 'package:example_slot_game/slot_game/vertical_board/vertical_board.dart';
-import 'package:flame/effects.dart';
-import 'package:flame/game.dart';
-import 'package:flutter/material.dart';
+import 'package:flame_riverpod/flame_riverpod.dart';
 
 class GameBoardViewModel {
+  GameBoardViewModel({
+    required this.ref
+  });
+  ComponentRef ref;
 
   List<GameBlockModel> verticalGameBlockMap = [];
   List<List<GameBlockModel>> allVerticalGameBlockMap = [];
@@ -32,28 +37,48 @@ class GameBoardViewModel {
   }
 
   _getRandom() {
-    Random random = Random();
+    final Random random = Random();
+    final SlotRes slotRes = GlobalCache.slotRes;
+
+    /// 直
+    /// index 0 ~ 4 塞入隨機值
     allVerticalGameBlockMap = [];
     for(int i = 0; i < 6; i++) {
       verticalGameBlockMap = [];
       horizontalGameBlockMap = [];
       for(int j = 0; j < 10; j++) { /// 暫時 10
-        final GameBlockType type = GameBlockType.values[random.nextInt(GameBlockType.values.length)];
-        final num coverNumber = random.nextInt(4) + 1;
-        /// 暫時模擬
-        // if(j == 7) {
-        //   final GameBlockModel model = GameBlockModel(type: type, coverNumber: 3);
-        //   verticalGameBlockMap.add(model);
-        //   continue ;
-        // }
+        final GameBlockType type = GameBlockType.values[random.nextInt(GameBlockType.values.length - 1)];
         final GameBlockModel model = GameBlockModel(type: type, coverNumber: 1);
         verticalGameBlockMap.add(model);
       }
+
+      /// 加入真實資料
+      // for(int j = 0; j < 5; j++) {
+      //   final String itemStr = slotRes.detail?.detailList?[0].itemMap?[i][j] ?? '';
+      //   final GameBlockType blockType = itemStr.getBlockType ?? GameBlockType.wild;
+      //   final num coverNumber = itemStr.getBlockCoverNumber;
+      //   final bool isGold = itemStr.isGold;
+      //   final GameBlockModel gameBlockModel = GameBlockModel(type: blockType, coverNumber: coverNumber, isGold: isGold);
+      //   verticalGameBlockMap.add(gameBlockModel);
+      // }
+
       allVerticalGameBlockMap.add(verticalGameBlockMap);
     }
 
+
+    /// 橫
+    /// index 0 ~ 3 塞入隨機值
+    // for(int i = 0; i < 4; i++) {
+    //   final String itemStr = slotRes.detail?.detailList?[0].itemMap?.last[i] ?? '';
+    //   final GameBlockType blockType = itemStr.getBlockType ?? GameBlockType.wild;
+    //   final num coverNumber = itemStr.getBlockCoverNumber;
+    //   final bool isGold = itemStr.isGold;
+    //   final GameBlockModel gameBlockModel = GameBlockModel(type: blockType, coverNumber: coverNumber, isGold: isGold);
+    //   horizontalGameBlockMap.add(gameBlockModel);
+    // }
+
     for(int i = 0; i < 8; i++) {
-      final GameBlockType type = GameBlockType.values[random.nextInt(GameBlockType.values.length)];
+      final GameBlockType type = GameBlockType.values[random.nextInt(GameBlockType.values.length - 1)];
       final GameBlockModel model = GameBlockModel(type: type, coverNumber: 1);
       horizontalGameBlockMap.add(model);
     }
@@ -63,10 +88,12 @@ class GameBoardViewModel {
     required List<VerticalBoard> verticalList,
     required List<HorizontalBoard> horizontalList,
   }) async {
-    final Map<GameBlockType, num> resultMap = allVerticalGameBlockMap.getEachTypeHasSix;
-    final List<GameBlockType> rewardTypeList = resultMap.entries
-        .where((map) => map.value >= 5) /// 暫時
-        .map((rewardBlocks) => rewardBlocks.key).toList();
+    /// 取得消除Type
+    final SlotRes slotRes = GlobalCache.slotRes;
+    final List<RoundListInfo> roundList = slotRes.detail?.detailList?.first.roundList ?? [];
+    if(roundList.isEmpty) return;
+    final GameBlockType removeType = roundList.first.item?.getBlockType ?? GameBlockType.none;
+    final List<GameBlockType> rewardTypeList = [removeType];
 
     /// 全部轉暗
     _turnAllBlockTheme(verticalList, enableLight: false);
@@ -163,22 +190,50 @@ class GameBoardViewModel {
     }
   }
 
+  /// 加入後端資料
   updateSprite({
     required List<VerticalBoard> verticalList,
   }) {
-    _getRandom();
+    final SlotRes slotRes = GlobalCache.slotRes;
+    final List<DetailListInfo> detailList = slotRes.detail?.detailList ?? [];
+    final List<List<String?>> itemMap = detailList[0].itemMap ?? [];
+    if(itemMap.isEmpty) return ;
+    _updateAllGameBlockMapFromAPI(itemMap);
 
     for(int i = 0; i < 6; i++) {
       verticalList[i].verticalGameBlockMap = allVerticalGameBlockMap[i];
-      for(int j = 0; j < 10; j++) {
+      for(int j = 5; j < 10; j++) {
         final GameBlockType type = allVerticalGameBlockMap[i][j].type;
         final single = verticalList[i].gameBlockComponentList.firstWhere((block) {
           final blockY = block.y.roundToDouble();
           final globalBlockY = (GlobalValue.blockVector.y * j).roundToDouble();
           return blockY == globalBlockY;
         });
-        single.updateSprite(type.getBlockImgPath(1));
+
+        final String item = itemMap[i][j - 5] ?? '';
+        final num coverNumber = item.getBlockCoverNumber;
+        if(coverNumber == 0) {
+          single.removeBlock();
+          continue;
+        }
+        single.updateSprite(
+          imgPath: type.getBlockImgPath(coverNumber),
+          coverNumber: coverNumber,
+          isGold: item.isGold
+        );
         // verticalList[i].gameBlockComponentList[j].updateSprite(type.getBlockImgPath(1));
+      }
+    }
+  }
+
+  _updateAllGameBlockMapFromAPI(List<List<String?>> itemMap) {
+    for(int i = 0; i < 6; i++) {
+      for (int j = 0; j < 5; j++) {
+        final String item = itemMap[i][j] ?? '';
+        final GameBlockType type = item.getBlockType ?? GameBlockType.none;
+        final num coverNumber = item.getBlockCoverNumber;
+        final bool isGold = item.isGold;
+        allVerticalGameBlockMap[i][j + 5] = GameBlockModel(type: type, coverNumber: coverNumber, isGold: isGold);
       }
     }
   }
@@ -191,6 +246,7 @@ class GameBoardViewModel {
     if(spinType == SpinType.stop || spinType == SpinType.none) {
       await startSpin(verticalList: verticalList, horizontalList: horizontalList);
     }
+
     updateSprite(verticalList: verticalList);
     await _getActionDelayTime(flashBtnEnable);
 
@@ -199,7 +255,7 @@ class GameBoardViewModel {
     }
   }
 
-  Future<void>_getActionDelayTime(bool flashBtnEnable) async {
+  Future<void> _getActionDelayTime(bool flashBtnEnable) async {
     if(flashBtnEnable == false) {
       await Future.delayed(const Duration(seconds: 2));
     }

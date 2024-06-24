@@ -158,18 +158,18 @@ class SlotGameCenter extends FlameGame with RiverpodGameMixin {
   @override
   void onMount() {
     addToGameWidgetBuild(() => ref.listen(userInfoProvider, (provider, listener) {
-      switch (listener.slotGameStatus) {
-        case SlotGameStatus.init:
-          print('SlotGameStatus init');
+      switch (listener.slotStatus) {
+        case SlotStatus.init:
+          print('SlotStatus init');
           break;
-        case SlotGameStatus.spin:
-          print('SlotGameStatus spin');
+        case SlotStatus.spin:
+          print('SlotStatus spin');
           break;
-        case SlotGameStatus.stop:
-          print('SlotGameStatus stop');
+        case SlotStatus.stop:
+          print('SlotStatus stop');
           break;
-        case SlotGameStatus.win:
-          print('SlotGameStatus win');
+        case SlotStatus.win:
+          print('SlotStatus win');
           break;
         default:
           break;

@@ -12,18 +12,23 @@ class RoundListInfo {
     this.lineCount,
   });
 
+  /// 中獎圖標
   @JsonKey(name: 'item')
   final String? item;
 
+  /// 賠率
   @JsonKey(name: 'rate')
   final num? rate;
 
+  /// 符號連線位置
   @JsonKey(name: 'line')
   final List<String>? line;
 
+  /// 中獎金額
   @JsonKey(name: 'bonus')
   final num? bonus;
 
+  /// 賠付線數量
   @JsonKey(name: 'lineCount')
   final num? lineCount;
 

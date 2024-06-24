@@ -1,8 +1,15 @@
-2024/06/21-12:52:03.521 ec03 Reusing MANIFEST /private/var/folders/vw/cz7tj23s0m7_xljmhgj_k8c00000gn/T/flutter_tools.Q3Pwoi/flutter_tools_chrome_device.PtZGsl/Default/shared_proto_db/MANIFEST-000001
-2024/06/21-12:52:03.522 ec03 Recovering log #16
-2024/06/21-12:52:03.523 ec03 Reusing old log /private/var/folders/vw/cz7tj23s0m7_xljmhgj_k8c00000gn/T/flutter_tools.Q3Pwoi/flutter_tools_chrome_device.PtZGsl/Default/shared_proto_db/000016.log 
-2024/06/21-12:52:03.523 ec03 Delete type=0 #13
-2024/06/21-12:52:03.523 ec03 Delete type=0 #7
-2024/06/21-12:52:03.523 ec03 Delete type=0 #4
-2024/06/21-12:52:03.523 ec03 Delete type=0 #10
-2024/06/21-12:52:03.523 ec03 Delete type=0 #3
+2024/06/24-13:24:06.984 f503 Reusing MANIFEST /private/var/folders/vw/cz7tj23s0m7_xljmhgj_k8c00000gn/T/flutter_tools.dKdvxR/flutter_tools_chrome_device.m7aoiP/Default/shared_proto_db/MANIFEST-000001
+2024/06/24-13:24:06.984 f503 Recovering log #26
+2024/06/24-13:24:06.985 f503 Reusing old log /private/var/folders/vw/cz7tj23s0m7_xljmhgj_k8c00000gn/T/flutter_tools.dKdvxR/flutter_tools_chrome_device.m7aoiP/Default/shared_proto_db/000026.log 
+2024/06/24-13:24:06.985 f503 Delete type=0 #13
+2024/06/24-13:24:06.985 f503 Delete type=0 #7
+2024/06/24-13:24:06.985 f503 Delete type=0 #4
+2024/06/24-13:24:06.985 f503 Delete type=0 #10
+2024/06/24-13:24:06.985 f503 Delete type=0 #16
+2024/06/24-13:24:06.985 f503 Delete type=0 #3
+2024/06/24-13:24:06.985 f503 Delete type=2 #14
+2024/06/24-13:24:06.985 f503 Delete type=2 #17
+2024/06/24-13:24:06.985 f503 Delete type=2 #11
+2024/06/24-13:24:06.985 f503 Delete type=2 #8
+2024/06/24-13:24:06.985 f503 Delete type=0 #19
+2024/06/24-13:24:06.985 f503 Delete type=0 #23

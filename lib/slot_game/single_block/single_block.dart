@@ -15,6 +15,7 @@ class SingleBlock extends SpriteComponent with TapCallbacks {
     required this.coverNum,
     required this.startPosition,
     required this.gameBlockSprite,
+    this.isGold = false,
   }) : super(
       anchor: Anchor.topCenter,
       sprite: gameBlockSprite,
@@ -24,6 +25,7 @@ class SingleBlock extends SpriteComponent with TapCallbacks {
 
   num coverNum;
   Vector2 startPosition;
+  bool isGold;
   late Sprite gameBlockSprite;
   late SingleBlockViewModel viewModel;
   late SpineComponent destroySpine;
@@ -32,7 +34,7 @@ class SingleBlock extends SpriteComponent with TapCallbacks {
   @override
   Future<void> onLoad() async {
     viewModel = SingleBlockViewModel();
-    _loadAnimate();
+    _loadGoldOutLine(isGold: isGold, coverNum: coverNum);
     // _loadOutLine();
     super.onLoad();
   }
@@ -40,12 +42,6 @@ class SingleBlock extends SpriteComponent with TapCallbacks {
   @override
   void update(double dt) {
     super.update(dt);
-  }
-
-  @override
-  void onRemove() {
-    removeAll(children);
-    super.onRemove();
   }
 
   @override
@@ -97,19 +93,26 @@ class SingleBlock extends SpriteComponent with TapCallbacks {
     return completer.future;
   }
 
-  _loadOutLine() async {
-    final Sprite sprite = await Sprite.load('Game BLocks/Outline_1.png');
-    final SpriteComponent spriteComponent = SpriteComponent(sprite: sprite, size: GlobalValue.blockVector);
+  _loadGoldOutLine({
+    required bool isGold,
+    required num coverNum
+  }) async {
+    if(isGold == false) return ;
+    final Sprite sprite = await Sprite.load('Game BLocks/Outline_$coverNum.png');
+    final SpriteComponent spriteComponent = SpriteComponent(sprite: sprite, scale: Vector2(1.4, 1.4));
     add(spriteComponent);
   }
 
-  void _loadAnimate() {
-
-  }
-
-  void updateSprite(String imagePath) async {
-    Sprite newSprite = await Sprite.load(imagePath);
-    sprite = newSprite;  // 更新 sprite 属性
+  void updateSprite({
+    required String imgPath,
+    required num coverNumber,
+    bool isGold = false
+  }) async {
+    Sprite newSprite = await Sprite.load(imgPath);
+    sprite = newSprite;
+    final double sizeY = GlobalValue.blockVector.y * coverNumber;
+    size = Vector2(GlobalValue.blockVector.x, sizeY);
+    if(isGold) _loadGoldOutLine(isGold: isGold, coverNum: coverNumber);
   }
 
   void turnDark() {
@@ -124,8 +127,9 @@ class SingleBlock extends SpriteComponent with TapCallbacks {
     paint.color = Colors.white.withOpacity(1);
   }
 
-  void playRewardEffect() {
-
+  removeBlock() {
+    removeAll(children);
+    removeFromParent();
   }
 }
 

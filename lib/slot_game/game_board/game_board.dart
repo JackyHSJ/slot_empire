@@ -35,7 +35,7 @@ class GameBoard extends PositionComponent with RiverpodComponentMixin {
 
   @override
   Future<void> onLoad() async {
-    viewModel = GameBoardViewModel();
+    viewModel = GameBoardViewModel(ref: ref);
     viewModel.init();
 
     // 載入背景
@@ -178,7 +178,8 @@ class GameBoard extends PositionComponent with RiverpodComponentMixin {
       spritePath: 'navigation/auto.png',
       position: position,
       size: Vector2(100, 100),
-      onPressed: () => viewModel.playAuto(verticalList: verticalList, horizontalList: horizontalList)
+      onPressed: () => viewModel.playOnce(verticalList: verticalList, horizontalList: horizontalList)
+      // onPressed: () => viewModel.playAuto(verticalList: verticalList, horizontalList: horizontalList)
     );
   }
 
@@ -191,9 +192,7 @@ class GameBoard extends PositionComponent with RiverpodComponentMixin {
         size: Vector2(100, 100),
         onPressed: () {
           // viewModel.updateSprite(verticalList: verticalList);
-          viewModel.allVerticalGameBlockMap;
-          ref.read(userUtilProvider.notifier).setDataToPrefs(slotGameStatus: SlotGameStatus.win);
-          final res = ref.read(userInfoProvider).slotGameStatus;
+          final res = viewModel.allVerticalGameBlockMap;
           print('order: ${res}');
         }
     );

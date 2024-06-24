@@ -20,9 +20,9 @@ class DemoRes {
                 "line": [
                   "0,5",
                   "1,2",
-                  "3,1",
-                  "4,4",
-                  "5,2"
+                  "2,1",
+                  "3,4",
+                  "4,2"
                 ],
                 "bonus": 2,
                 "lineCount": 6000
@@ -90,7 +90,7 @@ class DemoRes {
                 "line": [
                   "0,5",
                   "1,2",
-                  "3,2"
+                  "2,2"
                 ],
                 "bonus": 50,
                 "lineCount": 6000
@@ -98,11 +98,11 @@ class DemoRes {
             ],
             "itemMap": [
               [
+                "N31",
                 "N21",
                 "H11",
                 "H11",
                 "H21",
-                "N31"
               ],
               [
                 "H51g",
@@ -256,7 +256,7 @@ class DemoRes {
               ],
               [
                 "S11",
-                "W33",
+                "W23",
                 null,
                 null,
                 "H11"

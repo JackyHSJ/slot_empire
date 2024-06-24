@@ -14,18 +14,22 @@ class DetailListInfo {
     this.freeCount,
   });
 
+  /// 中獎總額
   @JsonKey(name: 'totalBonus')
   final num? totalBonus;
 
   @JsonKey(name: 'roundList')
   final List<RoundListInfo>? roundList;
 
+  /// block map
   @JsonKey(name: 'itemMap')
   final List<List<String?>>? itemMap;
 
+  /// 遊戲類型
   @JsonKey(name: 'type')
   final num? type;
 
+  /// 免費次數
   @JsonKey(name: 'freeCount')
   final num? freeCount;
 

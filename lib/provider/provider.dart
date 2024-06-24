@@ -11,6 +11,3 @@ final userInfoProvider = Provider<UserInfoModel>((ref) {
   final UserInfoModel userInfo = ref.watch(userUtilProvider);
   return userInfo;
 });
-
-/// API provider
-Provider<CommAPI> commApiProvider = Provider<CommAPI>((ref) => CommAPI(ref: ref));

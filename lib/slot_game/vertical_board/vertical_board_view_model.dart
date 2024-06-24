@@ -1,8 +1,10 @@
 
 
 import 'package:example_slot_game/const/enum.dart';
+import 'package:example_slot_game/const/global_cache.dart';
 import 'package:example_slot_game/const/global_value.dart';
 import 'package:example_slot_game/model/game_block_model.dart';
+import 'package:example_slot_game/model/res/slot/slot_res.dart';
 import 'package:example_slot_game/model/vertical_block_model.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
@@ -64,14 +66,16 @@ class VerticalBoardViewModel {
     required Function(VerticalBlockModel) onAddToUpdate
   }) {
     int blockEmptySum = 0;
-    for (int i = verticalGameBlockMap.length -1; i >= 5; i--) {
+    for (int i = verticalGameBlockMap.length - 1; i >= 5; i--) {
       final Vector2 currentPosition = getVector2(x: GlobalValue.blockVector.x * horizontalIndex + 0, y: GlobalValue.blockVector.y * i);
       final bool isSpaceHasBlock = children.toList().any((b) {
         final position = (b as SpriteComponent).position;
         final positionY = position.y.round();
         final currentPositionY = currentPosition.y.round();
         return positionY - currentPositionY == 0;
-      }); /// 檢查每空格是否具有方塊
+      });
+
+      /// 檢查每空格是否具有方塊
       if(isSpaceHasBlock == false) {
         blockEmptySum += verticalGameBlockMap[i].coverNumber.toInt();
       }
@@ -119,12 +123,18 @@ class VerticalBoardViewModel {
 
   /// 補齊缺少區塊
   void addFallingBlocks({
-    required List<GameBlockModel> verticalGameBlockMap,
-    required ComponentSet children,
+    required num horizontalIndex,
     required Function(int) onLoadGameBlock
   }) {
-    final int missingBlocksCount = verticalGameBlockMap.length - children.length;
-    for (int i = missingBlocksCount - 1; i >= 0; i--) {
+    final SlotRes slotRes = GlobalCache.slotRes;
+    final List<String> line = slotRes.detail?.detailList?.first.roundList?.first.line ?? [];
+    final List<String> resultList = line.where((info) {
+      final List<String> part = info.split(',');
+      final num index = num.tryParse(part[0]) ?? 999;
+      return index == horizontalIndex;
+    }).toList();
+
+    for (int i = resultList.length - 1; i >= 0; i--) {
       onLoadGameBlock(i);
     }
   }

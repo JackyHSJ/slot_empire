@@ -21,7 +21,7 @@ class _LaunchState extends ConsumerState<Launch> with AfterLayoutMixin {
 
   @override
   void initState() {
-    viewModel = LaunchViewModel(ref: ref);
+    viewModel = LaunchViewModel();
     super.initState();
   }
 

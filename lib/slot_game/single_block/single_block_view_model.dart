@@ -24,13 +24,13 @@ class SingleBlockViewModel {
       return 'H1';
     }
 
-    final List<String> part = fileName.split('_');
-    return part.first;
+    final List<String> part = fileName.split('');
+    return part[0] + part[1];
   }
 
   String getImgCover(GameBlockModel gameBlockModel) {
     final String fileName = _getFileName(gameBlockModel);
-    final List<String> part = fileName.split('_');
-    return part.last;
+    final List<String> part = fileName.split('');
+    return part[2];
   }
 }

@@ -53,6 +53,7 @@ class VerticalBoard extends PositionComponent {
     final GameBlockModel gameBlockModel = verticalGameBlockMap[verticalIndex];
     final num coverNum = gameBlockModel.coverNumber;
     final String imgPath = gameBlockModel.getBlockImgPath;
+    if(imgPath == '') return ;
     final Sprite gameBlockSprite = await Sprite.load(imgPath);
 
     // Calculate the final position
@@ -67,11 +68,13 @@ class VerticalBoard extends PositionComponent {
     // If animate is true, start from above the visible area
     final Vector2 animateStart = viewModel.getBlockAnimateStartVector2(horizontalIndex: horizontalIndex);
     final Vector2 startPosition = addFallingBlocks ? animateStart : finalPosition;
+    final bool isGold = gameBlockModel.isGold;
 
     final SingleBlock gameBlockComponent = SingleBlock(
-        startPosition: startPosition,
-        gameBlockSprite: gameBlockSprite,
-        coverNum: coverNum
+      startPosition: startPosition,
+      gameBlockSprite: gameBlockSprite,
+      coverNum: coverNum,
+      isGold: isGold
     );
 
     if(addFallingBlocks == false) {
@@ -160,7 +163,6 @@ class VerticalBoard extends PositionComponent {
     });
   }
 
-
   void updateFallingBlocks() {
     List<VerticalBlockModel> toUpdate = [];
 
@@ -179,12 +181,10 @@ class VerticalBoard extends PositionComponent {
     );
   }
 
-
   /// 全部動畫完成
   void moveEffectDone() {
     viewModel.addFallingBlocks(
-      verticalGameBlockMap: verticalGameBlockMap,
-      children: children,
+      horizontalIndex: horizontalIndex,
       onLoadGameBlock: (index) => _loadGameBlock(index, addFallingBlocks: true)
     );
   }
