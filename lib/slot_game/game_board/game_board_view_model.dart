@@ -10,7 +10,9 @@ import 'package:example_slot_game/model/game_block_model.dart';
 import 'package:example_slot_game/model/res/slot/detail_list_info/detail_list_info.dart';
 import 'package:example_slot_game/model/res/slot/round_list_info/round_list_info.dart';
 import 'package:example_slot_game/model/res/slot/slot_res.dart';
+import 'package:example_slot_game/provider/user_info_provider.dart';
 import 'package:example_slot_game/slot_game/horizontal_board/horizontal_board.dart';
+import 'package:example_slot_game/slot_game/single_block/single_block.dart';
 import 'package:example_slot_game/slot_game/vertical_board/vertical_board.dart';
 import 'package:flame_riverpod/flame_riverpod.dart';
 
@@ -38,45 +40,25 @@ class GameBoardViewModel {
 
   _getRandom() {
     final Random random = Random();
-    final SlotRes slotRes = GlobalCache.slotRes;
-
     /// 直
     /// index 0 ~ 4 塞入隨機值
     allVerticalGameBlockMap = [];
     for(int i = 0; i < 6; i++) {
       verticalGameBlockMap = [];
       horizontalGameBlockMap = [];
-      for(int j = 0; j < 10; j++) { /// 暫時 10
+
+      /// 加入真實資料
+      for(int j = 0; j < 10; j++) {
         final GameBlockType type = GameBlockType.values[random.nextInt(GameBlockType.values.length - 1)];
         final GameBlockModel model = GameBlockModel(type: type, coverNumber: 1);
         verticalGameBlockMap.add(model);
       }
 
-      /// 加入真實資料
-      // for(int j = 0; j < 5; j++) {
-      //   final String itemStr = slotRes.detail?.detailList?[0].itemMap?[i][j] ?? '';
-      //   final GameBlockType blockType = itemStr.getBlockType ?? GameBlockType.wild;
-      //   final num coverNumber = itemStr.getBlockCoverNumber;
-      //   final bool isGold = itemStr.isGold;
-      //   final GameBlockModel gameBlockModel = GameBlockModel(type: blockType, coverNumber: coverNumber, isGold: isGold);
-      //   verticalGameBlockMap.add(gameBlockModel);
-      // }
-
-      allVerticalGameBlockMap.add(verticalGameBlockMap);
+      allVerticalGameBlockMap.add(verticalGameBlockMap.reversed.toList());
     }
-
 
     /// 橫
     /// index 0 ~ 3 塞入隨機值
-    // for(int i = 0; i < 4; i++) {
-    //   final String itemStr = slotRes.detail?.detailList?[0].itemMap?.last[i] ?? '';
-    //   final GameBlockType blockType = itemStr.getBlockType ?? GameBlockType.wild;
-    //   final num coverNumber = itemStr.getBlockCoverNumber;
-    //   final bool isGold = itemStr.isGold;
-    //   final GameBlockModel gameBlockModel = GameBlockModel(type: blockType, coverNumber: coverNumber, isGold: isGold);
-    //   horizontalGameBlockMap.add(gameBlockModel);
-    // }
-
     for(int i = 0; i < 8; i++) {
       final GameBlockType type = GameBlockType.values[random.nextInt(GameBlockType.values.length - 1)];
       final GameBlockModel model = GameBlockModel(type: type, coverNumber: 1);
@@ -84,23 +66,25 @@ class GameBoardViewModel {
     }
   }
 
+
+
   Future<void> checkAndRemoveRewardBlock({
     required List<VerticalBoard> verticalList,
     required List<HorizontalBoard> horizontalList,
   }) async {
     /// 取得消除Type
     final SlotRes slotRes = GlobalCache.slotRes;
-    final List<RoundListInfo> roundList = slotRes.detail?.detailList?.first.roundList ?? [];
+    final int currentRound = GlobalCache.comboRoundCount.toInt();
+    final List<RoundListInfo> roundList = slotRes.detail?.detailList?[currentRound].roundList ?? [];
     if(roundList.isEmpty) return;
-    final GameBlockType removeType = roundList.first.item?.getBlockType ?? GameBlockType.none;
-    final List<GameBlockType> rewardTypeList = [removeType];
+    final List<GameBlockType> rewardTypeList = roundList.map((roundInfo) => roundInfo.item?.getBlockType ?? GameBlockType.none).toList();
 
     /// 全部轉暗
     _turnAllBlockTheme(verticalList, enableLight: false);
 
     List<Future> removeVerticalFutures = [];
     for(int i = 0; i < verticalList.length; i++) {
-      removeVerticalFutures.add(_removeVertical(verticalList[i], rewardTypeList: rewardTypeList));
+      removeVerticalFutures.add(_removeVertical(verticalList[i], rewardTypeList: rewardTypeList, verticalIndex: i));
     }
     await Future.wait(removeVerticalFutures);
     _removeHorizontal(horizontalList.single);
@@ -110,6 +94,17 @@ class GameBoardViewModel {
 
     await Future.delayed(const Duration(seconds: 1));
     _sortGameBlockComponentList(verticalList);
+
+    /// enter free game
+    /// need stop it
+    final bool isFreeGame = GlobalCache.checkFreeGame;
+    if(isFreeGame) {
+      ref.read(userUtilProvider.notifier).setDataToPrefs(slotGameStatus: SlotGameStatus.freeGame);
+      return ;
+    }
+
+    GlobalCache.comboRoundCount++;
+    updateSprite(verticalList: verticalList);
 
     print("已移除匹配方塊並更新方塊位置");
     print("stop");
@@ -138,19 +133,55 @@ class GameBoardViewModel {
     horizontal.updateFallingBlocks();
   }
 
+  List<String?> _getCurrentItemList(int verticalIndex) {
+    final int round = GlobalCache.comboRoundCount.toInt();
+    final detailList = GlobalCache.slotRes.detail?.detailList?[round];
+    final List<List<String?>> itemMap = detailList?.itemMap ?? [];
+    return itemMap[verticalIndex];
+  }
+
+  List<int> _getRemoveList(List<int> indicesToRemove, {
+    required List<String?> itemList
+  }) {
+    final List<int> list = indicesToRemove.reversed.toList(); // [7, 6, 5]
+    final List<String?> reversedItemList = itemList.reversed.toList();
+    final List<int> resultList = [];
+      list.forEach((index) {
+      final String item = reversedItemList[index - 5] ?? '';
+      final String coverNumberStr = item.split('')[2];
+      final int coverNumber = int.tryParse(coverNumberStr) ?? 0;
+      for(int i = 0; i < coverNumber; i++) {
+        resultList.add(index - i);
+      }
+    });
+    return resultList;
+  }
+
   Future<void> _removeVertical(VerticalBoard vertical, {
+    required int verticalIndex,
     required List<GameBlockType> rewardTypeList
   }) async {
+    final List<String?> itemList = _getCurrentItemList(verticalIndex);
     final List<GameBlockModel> verticalGameBlockMap = vertical.verticalGameBlockMap;
-    final List<int> indicesToRemove = List<int>.generate(verticalGameBlockMap.length, (i) => i)
-        .where((i) => i >= 5 && rewardTypeList.contains(verticalGameBlockMap[i].type))
-        .toList();
 
-    final List<int> list = indicesToRemove.reversed.toList();
-    await vertical.removeBlockEffect(removeIndexList: list);
-    await vertical.removeDestroyEffect(removeIndexList: list);
-    vertical.removeBlocks(removeIndexList: list);
+    final List<int> indicesToRemove = List<int>.generate(verticalGameBlockMap.length, (i) => i).where((i) { // [5, 6, 7]
+      final GameBlockType type = verticalGameBlockMap[i].type;
+      final bool isContainType = (i >= 5 && rewardTypeList.contains(type));
+      return isContainType;
+    }).toList();
 
+    final List<int> removeList = _getRemoveList(indicesToRemove, itemList: itemList);
+
+    await vertical.removeBlockEffect(removeIndexList: removeList);
+
+    /// enter free game
+    /// need stop it
+    final bool isFreeGame = GlobalCache.checkFreeGame;
+    if(isFreeGame) return ;
+
+    await vertical.removeDestroyEffect(removeIndexList: removeList);
+
+    vertical.removeBlocks(removeIndexList: removeList);
     await Future.delayed(const Duration(milliseconds: 100));
     vertical.updateFallingBlocks();
   }
@@ -183,7 +214,7 @@ class GameBoardViewModel {
   Future<void> _getStopSpinDelayTime(bool flashBtnEnable) async {
     /// 快速模式
     if(flashBtnEnable == true) {
-      await Future.delayed(const Duration(milliseconds: 100));
+      await Future.delayed(const Duration(milliseconds: 50));
     }
     if(flashBtnEnable == false) {
       await Future.delayed(const Duration(milliseconds: 500));
@@ -196,32 +227,30 @@ class GameBoardViewModel {
   }) {
     final SlotRes slotRes = GlobalCache.slotRes;
     final List<DetailListInfo> detailList = slotRes.detail?.detailList ?? [];
-    final List<List<String?>> itemMap = detailList[0].itemMap ?? [];
+    final int currentRound = GlobalCache.comboRoundCount.toInt();
+    final List<List<String?>> itemMap = detailList[currentRound].itemMap ?? [];
     if(itemMap.isEmpty) return ;
     _updateAllGameBlockMapFromAPI(itemMap);
 
     for(int i = 0; i < 6; i++) {
       verticalList[i].verticalGameBlockMap = allVerticalGameBlockMap[i];
-      for(int j = 5; j < 10; j++) {
+      for(int j = 9; j > 4; j--) {
         final GameBlockType type = allVerticalGameBlockMap[i][j].type;
-        final single = verticalList[i].gameBlockComponentList.firstWhere((block) {
-          final blockY = block.y.roundToDouble();
-          final globalBlockY = (GlobalValue.blockVector.y * j).roundToDouble();
-          return blockY == globalBlockY;
-        });
-
-        final String item = itemMap[i][j - 5] ?? '';
+        final SingleBlock single = verticalList[i].gameBlockComponentList[j];
+        final String item = itemMap[i][9 - j] ?? '';
         final num coverNumber = item.getBlockCoverNumber;
         if(coverNumber == 0) {
-          single.removeBlock();
+          single.turnTransparent();
           continue;
         }
+
+        final String imgPath = type.getBlockImgPath(coverNumber);
+        if(imgPath == '') return ;
         single.updateSprite(
-          imgPath: type.getBlockImgPath(coverNumber),
+          imgPath: imgPath,
           coverNumber: coverNumber,
           isGold: item.isGold
         );
-        // verticalList[i].gameBlockComponentList[j].updateSprite(type.getBlockImgPath(1));
       }
     }
   }
@@ -233,7 +262,7 @@ class GameBoardViewModel {
         final GameBlockType type = item.getBlockType ?? GameBlockType.none;
         final num coverNumber = item.getBlockCoverNumber;
         final bool isGold = item.isGold;
-        allVerticalGameBlockMap[i][j + 5] = GameBlockModel(type: type, coverNumber: coverNumber, isGold: isGold);
+        allVerticalGameBlockMap[i][9 - j] = GameBlockModel(type: type, coverNumber: coverNumber, isGold: isGold);
       }
     }
   }
@@ -268,8 +297,14 @@ class GameBoardViewModel {
     required List<VerticalBoard> verticalList,
     required List<HorizontalBoard> horizontalList,
   }) async {
+    // GlobalCache.comboRoundCount = 0;
     await actionSpin(verticalList: verticalList, horizontalList: horizontalList, flashBtnEnable: _flashBtnEnable);
+    final int length = GlobalCache.slotRes.detail?.detailList?.length ?? 0;
     await checkAndRemoveRewardBlock(verticalList: verticalList, horizontalList: horizontalList);
+    // for(int i = 0; i < length; i++) {
+    //   await checkAndRemoveRewardBlock(verticalList: verticalList, horizontalList: horizontalList);
+    // }
+    // GlobalCache.comboRoundCount++;
   }
 
   playAuto({

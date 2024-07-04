@@ -1,0 +1,69 @@
+win.png
+size:1638,1638
+filter:Linear,Linear
+pma:true
+01
+bounds:1305,99,158,131
+rotate:90
+02
+bounds:1499,371,153,134
+rotate:90
+03
+bounds:823,3,168,127
+04
+bounds:1385,1204,178,130
+05
+bounds:1380,657,188,166
+rotate:90
+06
+bounds:1340,392,157,132
+07
+bounds:1438,237,157,132
+08
+bounds:1380,526,162,129
+09
+bounds:871,132,164,137
+rotate:90
+J_img_02
+bounds:1015,238,326,183
+rotate:90
+aurora01
+bounds:2,1124,512,512
+aurora02
+bounds:2,610,512,512
+big_win_aurora
+bounds:516,1124,512,512
+blin01
+bounds:2,30,64,64
+mega_win_aurora
+bounds:2,96,512,512
+super_win_aurora
+bounds:516,610,512,512
+圖層 1
+bounds:1205,649,536,173
+rotate:90
+圖層 2
+bounds:1380,847,338,181
+rotate:90
+圖層 3
+bounds:1030,566,619,173
+rotate:90
+圖層 4
+bounds:516,20,305,137
+圖層 5
+bounds:1200,259,305,138
+offsets:6,1,317,141
+rotate:90
+圖層 6
+bounds:871,298,310,142
+rotate:90
+圖層 7
+bounds:516,159,353,449
+圖層 7 拷貝
+bounds:1030,1187,353,449
+圖層 8
+bounds:1010,101,135,293
+rotate:90
+圖層 9
+bounds:1385,1336,300,251
+rotate:90

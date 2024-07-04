@@ -8,6 +8,7 @@ DetailListInfo _$DetailListInfoFromJson(Map<String, dynamic> json) => DetailList
   itemMap: json['itemMap'] as List<List<String?>>,
   type: json['type'] as num?,
   freeCount: json['freeCount'] as num?,
+  scatter: json['scatter'] as num?,
 );
 
 Map<String, dynamic> _$DetailListInfoToJson(DetailListInfo instance) => <String, dynamic>{
@@ -16,4 +17,5 @@ Map<String, dynamic> _$DetailListInfoToJson(DetailListInfo instance) => <String,
   'itemMap': instance.itemMap,
   'type': instance.type,
   'freeCount': instance.freeCount,
+  'scatter': instance.scatter,
 };

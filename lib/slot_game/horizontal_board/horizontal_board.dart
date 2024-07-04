@@ -17,7 +17,7 @@ import '../../const/enum.dart';
 class HorizontalBoard extends PositionComponent {
   HorizontalBoard({
     required this.horizontalGameBlockMap
-  });
+  }): super(anchor: Anchor.center, position: Vector2(0, GlobalValue.blockVector.y));
 
   late HorizontalBoardViewModel viewModel;
   List<GameBlockModel> horizontalGameBlockMap;
@@ -98,7 +98,7 @@ class HorizontalBoard extends PositionComponent {
       return ;
     }
     // final Vector2 animateEnd = Vector2(0, -GlobalValue.blockVector.y * 5);
-    final Vector2 animateEnd = Vector2(-GlobalValue.blockVector.x * 5, 0);
+    final Vector2 animateEnd = Vector2(-GlobalValue.blockVector.x * 5, GlobalValue.blockVector.y);
     controller = EffectController(duration: 0.1, infinite: true);
     spinMoveEffect = MoveEffect.to(animateEnd, controller);
     add(spinMoveEffect);
@@ -110,7 +110,7 @@ class HorizontalBoard extends PositionComponent {
     }
     spinMoveEffect.reset();
     removeAll(children.whereType<Effect>());
-    final Vector2 finalPosition = viewModel.getVector2(x: -72, y: 0);
+    final Vector2 finalPosition = viewModel.getVector2(x: -70, y: GlobalValue.blockVector.y);
     position = finalPosition;
   }
 

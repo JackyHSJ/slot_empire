@@ -1,36 +1,23 @@
 
 
-import 'package:example_slot_game/extension/game_block_type.dart';
-import 'package:example_slot_game/model/game_block_model.dart';
-import 'package:path/path.dart' as path;
+import 'package:example_slot_game/const/global_cache.dart';
+import 'package:example_slot_game/const/global_value.dart';
+import 'package:example_slot_game/model/res/slot/detail_list_info/detail_list_info.dart';
+import 'package:flame/components.dart';
 
 class SingleBlockViewModel {
 
-  String _getFileName(GameBlockModel gameBlockModel) {
-    final String imgPath = gameBlockModel.type.getBlockImgPath(gameBlockModel.coverNumber);
-    final String name = path.basenameWithoutExtension(imgPath);
-    return name;
-  }
-
-  String getImgName(GameBlockModel gameBlockModel) {
-    final String fileName = _getFileName(gameBlockModel);
-
-    /// Wild例外
-    if(fileName.contains('Wild') == true) {
-      return fileName;
-    }
-
-    if(fileName.contains('Scatter') == true) {
-      return 'H1';
-    }
-
-    final List<String> part = fileName.split('');
+  String getImgName(Vector2 position) {
+    final int x = position.x.round();
+    final int y = position.y.round();
+    final int matrixX = ((x - 72) / GlobalValue.blockVector.x).toInt();
+    final int matrixY = (y / GlobalValue.blockVector.y).toInt() ;
+    final int currentRound = GlobalCache.comboRoundCount.toInt();
+    final DetailListInfo? info = GlobalCache.slotRes.detail?.detailList?[currentRound];
+    final List<String?> list = info?.itemMap?[matrixX].reversed.toList() ?? [];
+    final String nameStr = list[matrixY - 5] ?? '';
+    if(nameStr == '') return '';
+    final List<String> part = nameStr.split('');
     return part[0] + part[1];
-  }
-
-  String getImgCover(GameBlockModel gameBlockModel) {
-    final String fileName = _getFileName(gameBlockModel);
-    final List<String> part = fileName.split('');
-    return part[2];
   }
 }

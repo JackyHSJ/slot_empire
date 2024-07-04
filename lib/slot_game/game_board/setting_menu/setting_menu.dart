@@ -6,7 +6,7 @@ import 'package:flame/input.dart';
 class SettingMenu extends PositionComponent {
   SettingMenu(): super(
     size: Vector2(100, 100),
-    position: Vector2(100, 100),
+    position: Vector2(150, 130),
     anchor: Anchor.center,
   );
   late SettingMenuViewModel viewModel;

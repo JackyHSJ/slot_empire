@@ -12,6 +12,7 @@ class DetailListInfo {
     this.itemMap,
     this.type,
     this.freeCount,
+    this.scatter,
   });
 
   /// 中獎總額
@@ -32,6 +33,10 @@ class DetailListInfo {
   /// 免費次數
   @JsonKey(name: 'freeCount')
   final num? freeCount;
+
+  /// scatter 數量
+  @JsonKey(name: 'scatter')
+  final num? scatter;
 
   factory DetailListInfo.fromJson(Map<String, dynamic> json) => _$DetailListInfoFromJson(json);
   Map<String, dynamic> toJson() => _$DetailListInfoToJson(this);

@@ -1,0 +1,9 @@
+frame_effect.png
+size:484,484
+filter:Linear,Linear
+pma:true
+A_Light_stra
+bounds:2,72,37,147
+rotate:90
+frame_aurora
+bounds:2,111,480,371

@@ -1,6 +1,8 @@
 import 'dart:developer';
 
 import 'package:example_slot_game/const/enum.dart';
+import 'package:example_slot_game/const/global_cache.dart';
+import 'package:example_slot_game/const/global_data.dart';
 import 'package:example_slot_game/const/global_value.dart';
 import 'package:example_slot_game/extension/game_block_type.dart';
 import 'package:example_slot_game/provider/provider.dart';
@@ -33,6 +35,8 @@ class GameBoard extends PositionComponent with RiverpodComponentMixin {
   LayoutMode currentLayoutMode;
   final SettingMenu settingMenu = SettingMenu();
 
+  late SpriteComponent backgroundComponent;
+
   @override
   Future<void> onLoad() async {
     viewModel = GameBoardViewModel(ref: ref);
@@ -46,15 +50,18 @@ class GameBoard extends PositionComponent with RiverpodComponentMixin {
     /// 載入跑馬燈
     _loadMarquee();
 
-    // 載入按鈕
-    _loadFlashBtn();
-    _loadAutoSpinBtn();
-    _loadRefreshBtn();
-
+    /// 載入按鈕
+    _buildLine();
+    _buildDarkMask();
     _loadOrderBtn();
+    _loadRefreshBtn();
+    _loadAutoSpinBtn();
+    _loadFlashBtn();
     _loadSettingBtn();
+
     _loadWiFiIcon();
     _loadWinIcon();
+    _buildWinNumber();
     _buildBalance();
     super.onLoad();
   }
@@ -65,13 +72,137 @@ class GameBoard extends PositionComponent with RiverpodComponentMixin {
     super.update(dt);
   }
 
+  _buildLine() async {
+    final Sprite sprite = await Sprite.load('Common_Item/Ctrl_Panel/Ctrl_Line.png');
+    final SpriteComponent spriteComponent = SpriteComponent(
+      sprite: sprite,
+      scale: Vector2(1.2, 1.2),
+      anchor: Anchor.center,
+      position: Vector2(0, 500),
+    );
+    add(spriteComponent);
+  }
+
+  _buildDarkMask() {
+    final Paint paint = Paint()
+      ..color = Colors.black.withOpacity(0.2);
+    final RectangleComponent component = RectangleComponent(
+        anchor: Anchor.center,
+        position: Vector2(0, 600),
+        paint: paint, size: Vector2(GlobalData.resolutionLow, 300)
+    );
+    add(component);
+  }
+
+  _loadBtn({
+    String? backgroundPath,
+    required String spritePath,
+    required Vector2 position,
+    Vector2? size,
+    Vector2? scale,
+    String title = '',
+    required Function() onPressed
+  }) async {
+    _loadBtnBackGround(backgroundPath: backgroundPath, position: position, size: size, scale: scale);
+
+    final Sprite btnSprite = await Sprite.load(spritePath);
+    final TextComponent textComponent = TextComponent(text: title, position: Vector2(10, 80));
+    final SpriteButtonComponent btnComponent = SpriteButtonComponent(
+        anchor: Anchor.center,
+        button: btnSprite,
+        size: size,
+        scale: scale,
+        position: position,
+        children: [
+          textComponent,
+        ],
+        onPressed: () => onPressed()
+    );
+    add(btnComponent);
+  }
+
+  _loadBtnBackGround({
+    String? backgroundPath,
+    required Vector2 position,
+    Vector2? size,
+    Vector2? scale,
+  }) async {
+    if(backgroundPath == null) return ;
+    final Sprite btnBackGroundSprite = await Sprite.load(backgroundPath);
+    final SpriteComponent spriteComponent = SpriteComponent(
+        sprite: btnBackGroundSprite,
+        position: position,
+        anchor: Anchor.center,
+        scale: scale,
+        size: size,
+    );
+    add(spriteComponent);
+  }
+
+  _loadFlashBtn() async {
+    final Vector2 position = currentLayoutMode == LayoutMode.landscape ? Vector2(600, 500) : Vector2(250, 630);
+    _loadBtn(
+        backgroundPath: 'Common_Item/Btn/Spin_02.png',
+        spritePath: 'Common_Item/Btn/QuickStart_Off.png',
+        position: position,
+        size: Vector2(80, 80),
+        onPressed: () => viewModel.flash()
+    );
+  }
+
+  _loadAutoSpinBtn() {
+    final Vector2 position = currentLayoutMode == LayoutMode.landscape ? Vector2(500, 500) : Vector2(150, 630);
+    _loadBtn(
+        backgroundPath: 'Common_Item/Btn/Spin_02.png',
+        spritePath: 'Common_Item/Btn/AutonPlay_Start.png',
+        position: position,
+        size: Vector2(80, 80),
+        onPressed: () => viewModel.playAuto(verticalList: verticalList, horizontalList: horizontalList)
+    );
+  }
+
+  _loadOrderBtn() {
+    final Vector2 position = currentLayoutMode == LayoutMode.landscape ? Vector2(-500, 500) : Vector2(-150, 630);
+    _loadBtn(
+        backgroundPath: 'Common_Item/Btn/Spin_02.png',
+        spritePath: 'Common_Item/Btn/Bet.png',
+        position: position,
+        title: 'Bet 3',
+        size: Vector2(80, 80),
+        onPressed: () {
+          print('order');
+        }
+    );
+  }
+
+  _loadSettingBtn() { //
+    final Vector2 position = currentLayoutMode == LayoutMode.landscape ? Vector2(-600, 500) : Vector2(-350, 630);
+    _loadBtn(
+        backgroundPath: 'Common_Item/Btn/Spin_02.png',
+        spritePath: 'Common_Item/Btn/setting.png',
+        position: position,
+        size: Vector2(80, 80),
+        onPressed: () => _loadSettingMenu()
+    );
+  }
+
+  _loadRefreshBtn() { //
+    final Vector2 position = currentLayoutMode == LayoutMode.landscape ? Vector2(-600, 500) : Vector2(0, 630);
+    _loadBtn(
+        backgroundPath: 'Common_Item/Btn/Spin_02.png',
+        spritePath: 'Common_Item/Btn/Spin.png',
+        position: position,
+        size: Vector2(150, 150),
+        onPressed: () => viewModel.playOnce(verticalList: verticalList, horizontalList: horizontalList)
+    );
+  }
+
   _loadWiFiIcon() async {
-    final Sprite sprite = await Sprite.load('icons/Wifi_4.png');
+    final Sprite sprite = await Sprite.load('Common_Item/Wifi_Icon/Wifi_4.png');
     final SpriteComponent btnComponent = SpriteComponent(
         sprite: sprite,
         anchor: Anchor.center,
-        size: Vector2(50, 50),
-        position: Vector2(400, 700),
+        position: Vector2(400, 800),
     );
     add(btnComponent);
   }
@@ -82,9 +213,18 @@ class GameBoard extends PositionComponent with RiverpodComponentMixin {
       sprite: sprite,
       anchor: Anchor.center,
       size: Vector2(100, 50),
-      position: Vector2(-150, 500),
+      position: Vector2(-150, 530),
     );
     add(btnComponent);
+  }
+
+  _buildWinNumber() {
+    final TextComponent textComponent = TextComponent(
+        text: '0.00',
+        textRenderer: TextPaint(style: const TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.w600)),
+        position: Vector2(-30, 510),
+    );
+    add(textComponent);
   }
 
   _clipMarquee(SpriteComponent spriteComponent) {
@@ -114,11 +254,11 @@ class GameBoard extends PositionComponent with RiverpodComponentMixin {
   _loadMainBlockBackgroundImg() async {
     final Sprite backgroundSprite = await Sprite.load('Block BG/Normal_BlockBG.png');
     Vector2 newSize = Vector2(backgroundSprite.srcSize.x * 1.4, backgroundSprite.srcSize.y * 1.4);
-    final SpriteComponent backgroundComponent = SpriteComponent(
-      anchor: Anchor.center,
-      sprite: backgroundSprite,
-      size: newSize,
-      position: Vector2(0, 80)
+    backgroundComponent = SpriteComponent(
+        anchor: Anchor.center,
+        sprite: backgroundSprite,
+        size: newSize,
+        position: Vector2(0, 80)
     );
     add(backgroundComponent);
   }
@@ -162,84 +302,6 @@ class GameBoard extends PositionComponent with RiverpodComponentMixin {
     horizontalList.add(horizontalBoard);
   }
 
-  _loadFlashBtn() async {
-    final Vector2 position = currentLayoutMode == LayoutMode.landscape ? Vector2(600, 500) : Vector2(320, 600);
-    _loadBtn(
-        spritePath: 'navigation/flash_on.png',
-        position: position,
-        size: Vector2(100, 100),
-        onPressed: () => viewModel.flash()
-    );
-  }
-
-  _loadAutoSpinBtn() {
-    final Vector2 position = currentLayoutMode == LayoutMode.landscape ? Vector2(500, 500) : Vector2(200, 600);
-    _loadBtn(
-      spritePath: 'navigation/auto.png',
-      position: position,
-      size: Vector2(100, 100),
-      onPressed: () => viewModel.playOnce(verticalList: verticalList, horizontalList: horizontalList)
-      // onPressed: () => viewModel.playAuto(verticalList: verticalList, horizontalList: horizontalList)
-    );
-  }
-
-  _loadOrderBtn() {
-    final Vector2 position = currentLayoutMode == LayoutMode.landscape ? Vector2(-500, 500) : Vector2(-200, 600);
-    _loadBtn(
-        spritePath: 'navigation/order.png',
-        position: position,
-        title: 'Bet 3',
-        size: Vector2(100, 100),
-        onPressed: () {
-          // viewModel.updateSprite(verticalList: verticalList);
-          final res = viewModel.allVerticalGameBlockMap;
-          print('order: ${res}');
-        }
-    );
-  }
-
-  _loadSettingBtn() { //
-    final Vector2 position = currentLayoutMode == LayoutMode.landscape ? Vector2(-600, 500) : Vector2(-400, 600);
-    _loadBtn(
-        spritePath: 'navigation/setting.png',
-        position: position,
-        size: Vector2(100, 100),
-        onPressed: () => _loadSettingMenu()
-    );
-  }
-
-  _loadRefreshBtn() { //
-    final Vector2 position = currentLayoutMode == LayoutMode.landscape ? Vector2(-600, 500) : Vector2(0, 600);
-    _loadBtn(
-        spritePath: 'navigation/icons_23.png',
-        position: position,
-        size: Vector2(200, 170),
-        onPressed: () => viewModel.playOnce(verticalList: verticalList, horizontalList: horizontalList)
-    );
-  }
-
-  _loadBtn({
-    required String spritePath,
-    required Vector2 position,
-    required Vector2 size,
-    String title = '',
-    required Function() onPressed
-  }) async {
-    final Sprite btnSprite = await Sprite.load(spritePath);
-    final TextComponent textComponent = TextComponent(text: title, position: Vector2(25, 100));
-    final SpriteButtonComponent btnComponent = SpriteButtonComponent(
-        anchor: Anchor.center,
-        button: btnSprite,
-        size: size,
-        position: position,
-        children: [
-          textComponent
-        ],
-        onPressed: () => onPressed()
-    );
-    add(btnComponent);
-  }
-
   _loadSettingMenu() async {
     if(settingMenu.isMounted) {
       settingMenu.removeFromParent();
@@ -247,8 +309,6 @@ class GameBoard extends PositionComponent with RiverpodComponentMixin {
     }
     add(settingMenu);
   }
-
-
 
   _buildBalance() {
     final TextComponent balance = TextComponent(
@@ -259,7 +319,7 @@ class GameBoard extends PositionComponent with RiverpodComponentMixin {
     final TextComponent textComponent = TextComponent(
       text: 'Balance',
       textRenderer: TextPaint(style: TextStyle(color: Colors.yellowAccent, fontSize: 30)),
-      position: Vector2(-150, 700),
+      position: Vector2(-150, 730),
       children: [
         balance
       ]
@@ -271,5 +331,34 @@ class GameBoard extends PositionComponent with RiverpodComponentMixin {
   void onRemove() {
     removeAll(children);
     super.onRemove();
+  }
+
+  @override
+  void onMount() {
+    addToGameWidgetBuild(() => ref.listen(userInfoProvider, (provider, listener) {
+      switch (listener.slotGameStatus) {
+        case SlotGameStatus.mainGame:
+          _changeMainGameBoard();
+          print('mainGame');
+          break;
+        case SlotGameStatus.freeGame:
+          _changeToFreeGameBoard();
+          print('freeGame');
+          break;
+        default:
+          break;
+      }
+    }));
+    super.onMount();
+  }
+
+  _changeMainGameBoard() async {
+    final Sprite backgroundSprite = await Sprite.load('Block BG/Normal_BlockBG.png');
+    backgroundComponent.sprite = backgroundSprite;
+  }
+
+  _changeToFreeGameBoard() async {
+    final Sprite backgroundSprite = await Sprite.load('Block BG/FGMode_BlockBG.png');
+    backgroundComponent.sprite = backgroundSprite;
   }
 }

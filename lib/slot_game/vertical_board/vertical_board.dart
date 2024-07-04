@@ -18,7 +18,7 @@ class VerticalBoard extends PositionComponent {
   VerticalBoard({
     required this.horizontalIndex,
     required this.verticalGameBlockMap,
-  }): super(position: Vector2(0, -520)); // 顯示6 ~ 10 行
+  }): super(position: Vector2(0, -420), anchor: Anchor.center); // 顯示6 ~ 10 行
 
   int horizontalIndex;
   List<GameBlockModel> verticalGameBlockMap;
@@ -83,6 +83,14 @@ class VerticalBoard extends PositionComponent {
     }
 
     if (addFallingBlocks == true) {
+      final String imgName = viewModel.getImgName(matrixX: horizontalIndex, matrixY: verticalIndex);
+      final bool isGold = viewModel.getIsGold(matrixX: horizontalIndex, matrixY: verticalIndex);
+      final num coverNumber = viewModel.getCoverNumber(matrixX: horizontalIndex, matrixY: verticalIndex);
+
+      if(imgName == '' || coverNumber == 0) return ;
+
+      gameBlockComponent.updateSprite(imgPath: 'Game BLocks/$imgName.png', coverNumber: coverNumber, isGold: isGold);
+
       final Vector2 animateEnd = viewModel.getBlockVector2(
           x: 0, y: 0,
           blockWidth: GlobalValue.blockVector.x,
@@ -102,6 +110,11 @@ class VerticalBoard extends PositionComponent {
   void onRemove() {
     removeAll(children);
     super.onRemove();
+  }
+
+  removeOtherVerticalBlock() {
+    final int length = children.length;
+    print('123 length: $length');
   }
 
   /// 中獎檢查, 為中獎轉暗, 中獎轉亮
@@ -157,7 +170,7 @@ class VerticalBoard extends PositionComponent {
     removeIndexList.forEach((removeIndex) {
       removeWhere((component) => viewModel.removeBlocks(
           component: component,
-          removeIndex: removeIndex
+          removeIndex: removeIndex,
       ));
       gameBlockComponentList.removeAt(removeIndex);
     });
@@ -182,8 +195,10 @@ class VerticalBoard extends PositionComponent {
   }
 
   /// 全部動畫完成
-  void moveEffectDone() {
+  void moveEffectDone() async {
     viewModel.addFallingBlocks(
+      children: children,
+      verticalGameBlockMap: verticalGameBlockMap,
       horizontalIndex: horizontalIndex,
       onLoadGameBlock: (index) => _loadGameBlock(index, addFallingBlocks: true)
     );
@@ -193,7 +208,7 @@ class VerticalBoard extends PositionComponent {
     if(spinType == SpinType.spin) {
       return ;
     }
-    final Vector2 animateEnd = Vector2(0, 0);
+    final Vector2 animateEnd = Vector2(0, GlobalValue.blockVector.y);
     controller = EffectController(duration: 0.1, infinite: true);
     spinMoveEffect = MoveEffect.to(animateEnd, controller);
     add(spinMoveEffect);
@@ -205,7 +220,7 @@ class VerticalBoard extends PositionComponent {
     }
     spinMoveEffect.reset();
     removeAll(children.whereType<Effect>());
-    final Vector2 finalPosition = viewModel.getVector2(x: -72, y: -520); // 最終顯示 6 ~ 10行
+    final Vector2 finalPosition = viewModel.getVector2(x: -72, y: -420); // 最終顯示 6 ~ 10行
     position = finalPosition;
   }
 }

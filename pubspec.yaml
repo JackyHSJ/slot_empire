@@ -73,19 +73,26 @@ flutter:
     - assets/images/Button BG/
     - assets/images/Background/
     - assets/images/marquee/
-    - assets/images/navigation/
     - assets/images/icons/
     - assets/images/GameTXT/
-    - assets/images/Common_Item/
+    - assets/images/Common_Item/Btn/
+    - assets/images/Common_Item/Ctrl_Panel/
+    - assets/images/Common_Item/Game_Txt/
+    - assets/images/Common_Item/Wifi_Icon/
 
     #    spine
 #    anim_1, anim_2, anim_3, anim_4
+    - assets/spine/Character/20240621/
     - assets/spine/Character/
 
+    - assets/spine/BG/FreeGame/
     - assets/spine/BG/MainGame/
-    - assets/spine/BG/MainGame/
+    - assets/spine/BG/Transitions/
+    - assets/spine/BG/Transitions/20240624/
     - assets/spine/export/
 
     - assets/spine/snowglobe/
-    - assets/spine/test/
-    - assets/spine/win_spine/
+    - assets/spine/win/
+    - assets/spine/congrats/
+    - assets/spine/frame_effect/
+    - assets/spine/slot_001/

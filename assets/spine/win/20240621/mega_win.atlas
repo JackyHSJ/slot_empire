@@ -1,0 +1,50 @@
+mega_win.png
+size:1322,1322
+filter:Linear,Linear
+pma:true
+01
+bounds:1124,595,158,131
+02
+bounds:1164,885,153,134
+03
+bounds:1030,1152,168,127
+rotate:90
+04
+bounds:1159,50,178,130
+rotate:90
+05
+bounds:991,40,188,166
+rotate:90
+06
+bounds:1030,862,157,132
+rotate:90
+07
+bounds:1124,728,157,132
+08
+bounds:1030,1021,162,129
+09
+bounds:1178,1156,164,137
+rotate:90
+aurora01
+bounds:2,808,512,512
+aurora02
+bounds:2,294,512,512
+blin01
+bounds:2,53,64,64
+mega_win_aurora
+bounds:516,808,512,512
+圖層 1
+bounds:2,119,536,173
+圖層 4
+bounds:871,367,305,137
+圖層 7
+bounds:540,2,353,449
+rotate:90
+圖層 7 拷貝
+bounds:516,357,353,449
+圖層 8
+bounds:991,230,135,293
+rotate:90
+圖層 9
+bounds:871,506,300,251
+rotate:90

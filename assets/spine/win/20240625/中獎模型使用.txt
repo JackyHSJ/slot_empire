@@ -1,0 +1,7 @@
+檔案有三組骨架分別是big_win/mega_win/super_win
+
+每組骨架有三個動畫
+anim_1/anim_2/anim_3
+
+動畫流程
+anim_1(大獎彈出動畫)>>anim_2(重複播放的動畫看跑分需要持續多久)>>anim_3(結束消失的動畫)

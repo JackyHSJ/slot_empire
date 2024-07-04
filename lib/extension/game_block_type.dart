@@ -14,7 +14,7 @@ extension GameBlockTypeExtension on GameBlockType {
         return 'Game Blocks/N1$coverNum.png'; //
 
       case GameBlockType.scatter:
-        return 'Game Blocks/Scatter$coverNum.png'; //
+        return 'Game Blocks/S1$coverNum.png'; //
       case GameBlockType.wild:
         return 'Game Blocks/Wild$coverNum.png'; //
 

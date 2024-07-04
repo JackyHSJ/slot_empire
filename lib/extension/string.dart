@@ -22,6 +22,7 @@ extension StringExtension on String {
 
         case 'S1': return GameBlockType.scatter;
 
+        case 'W1': return GameBlockType.wild;
         case 'W2': return GameBlockType.wild;
         case 'W3': return GameBlockType.wild;
       }

@@ -6,7 +6,7 @@ import 'package:flame/components.dart';
 class VerticalBlockModel {
   VerticalBlockModel({
     required this.spriteComponent,
-    this.dropNumber = 1
+    this.dropNumber = 1,
   });
 
   SpriteComponent spriteComponent;

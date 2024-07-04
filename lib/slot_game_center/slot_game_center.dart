@@ -1,6 +1,4 @@
 
-import 'dart:ui';
-
 import 'package:example_slot_game/const/enum.dart';
 import 'package:example_slot_game/const/global_data.dart';
 import 'package:example_slot_game/provider/provider.dart';
@@ -8,7 +6,6 @@ import 'package:example_slot_game/slot_game/game_board/game_board.dart';
 import 'package:example_slot_game/slot_game_center/background/background_board.dart';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
-import 'package:flame/input.dart';
 import 'package:flame_riverpod/flame_riverpod.dart';
 import 'package:flame_spine/flame_spine.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +16,12 @@ class SlotGameCenter extends FlameGame with RiverpodGameMixin {
   late Function stateCallbackHandler;
   //當前使用的 layout mode.
   LayoutMode _layoutMode = LayoutMode.none;
-  late SpineComponent spineSnowGlobe;
+  late SpineComponent manSpine;
+  late SpineComponent freeGameSpine;
+  late SpineComponent entrySpine;
+
+  late RectangleComponent darkMaskComponent;
+
   late SpineComponent spineTest;
 
   /// 當前的排版模式。
@@ -32,31 +34,38 @@ class SlotGameCenter extends FlameGame with RiverpodGameMixin {
     //根據當前 game size aspect ratio 來設定 LayoutMode, 同時決定攝影機 fixedResolution.
     _layoutBySize(size);
 
-    //這邊設定專案的設計解析度。(美術決定)
-    // camera.viewport.anchor = Anchor.center;
-
-    //The white rect. Just for showing the debug frame.
-    // final RectangleComponent rectangle = RectangleComponent(
-    //     size: Vector2(GlobalData.resolutionLow, GlobalData.resolutionHigh),
-    //     anchor: Anchor.center,
-    //     paint: Paint()..color = Colors.transparent
-    // );
-    // world.add(rectangle);
-
-    //This is the slot machine!
-    // slotMachine = SlotMachine();
-    // world.add(slotMachine!);
-
     /// load background
     _loadBackground();
 
     /// Spin
     // await _loadTest();
     await loadSpinAnimate();
-
+    // buildFreeGameSpine();
     _loadGameBoard();
 
+    // _buildEntrySpine();
     super.onLoad();
+  }
+
+  _buildEntrySpine() async {
+    _buildDarkMask(1);
+    entrySpine = await SpineComponent.fromAssets(
+        atlasFile: 'assets/spine/BG/Transitions/Transitions.atlas',
+        skeletonFile: 'assets/spine/BG/Transitions/Transitions.json',
+        scale: Vector2(1, 1),
+        anchor: Anchor.center,
+        position: Vector2(0, 0),
+        priority: 6,
+      children: []
+    );
+    entrySpine.animationState.setAnimationByName(0, 'anim_1', true);
+    entrySpine.animationState.setListener((EventType type, TrackEntry trackEntry, Event? event) {
+      if(type == EventType.complete) {
+        world.remove(entrySpine);
+        _removeDarkMask();
+      }
+    });
+    await world.add(entrySpine);
   }
 
   _loadTest() async {
@@ -91,7 +100,7 @@ class SlotGameCenter extends FlameGame with RiverpodGameMixin {
   }
 
   loadSpinAnimate() async {
-    spineSnowGlobe = await SpineComponent.fromAssets(
+    manSpine = await SpineComponent.fromAssets(
       atlasFile: 'assets/spine/Character/Character.atlas',
       skeletonFile: 'assets/spine/Character/Character.json',
       scale: Vector2(1.2, 1.2),
@@ -99,11 +108,12 @@ class SlotGameCenter extends FlameGame with RiverpodGameMixin {
       position: Vector2(0, -350),
       priority: 2
     );
-    // final slots = spineSnowGlobe.skeleton.getSlots();
-    // print('slots: ${slots.length}');
 
-    // spineSnowGlobe.skeleton.setAttachment('H1_1', 'Wild_1');
-    // spineSnowGlobe.animationState.setListener((EventType type, TrackEntry trackEntry, Event? event) {
+    // final slots = manSpine.skeleton.getSlots();
+    // print('slots: ${slots.length}');
+    //
+    // manSpine.skeleton.setAttachment('H1_1', 'Wild_1');
+    // manSpine.animationState.setListener((EventType type, TrackEntry trackEntry, Event? event) {
     //   if (type == EventType.complete) {
     //     print("Animation '${trackEntry.getAnimation().getName()}' completed.");
     //   } else if (type == EventType.start) {
@@ -112,12 +122,39 @@ class SlotGameCenter extends FlameGame with RiverpodGameMixin {
     //     print("Event '${event?.getData().getName()}' occurred at animation '${trackEntry.getAnimation().getName()}'.");
     //   }
     // });
-    spineSnowGlobe.animationState.setAnimationByName(0, 'anim_1', true);
-    await world.add(spineSnowGlobe);
+    manSpine.animationState.setAnimationByName(0, 'anim_1', true);
+    await world.add(manSpine);
   }
 
-  removeSpinAnimate() {
-    world.remove(spineSnowGlobe);
+  _buildDarkMask(double opacity) {
+    final Paint paint = Paint()
+      ..color = Colors.black.withOpacity(opacity);
+    darkMaskComponent = RectangleComponent(size: size, paint: paint, priority: 4, anchor: Anchor.center);
+    world.add(darkMaskComponent);
+  }
+
+  _removeDarkMask() {
+    world.remove(darkMaskComponent);
+  }
+
+  buildFreeGameSpine() async {
+    _buildDarkMask(0.9);
+    freeGameSpine = await SpineComponent.fromAssets(
+        atlasFile: 'assets/spine/BG/Transitions/20240624/Transitions.atlas',
+        skeletonFile: 'assets/spine/BG/Transitions/20240624/Transitions.json',
+        scale: Vector2(1, 1),
+        anchor: Anchor.center,
+        position: Vector2(0, 0),
+        priority: 5
+    );
+    freeGameSpine.animationState.setAnimationByName(0, 'anim_1', false);
+    freeGameSpine.animationState.setListener((EventType type, TrackEntry trackEntry, Event? event) {
+      if (type == EventType.complete) {
+        world.remove(freeGameSpine);
+        _removeDarkMask();
+      }
+    });
+    await world.add(freeGameSpine);
   }
 
   void _layoutBySize(Vector2 size) {
@@ -151,25 +188,18 @@ class SlotGameCenter extends FlameGame with RiverpodGameMixin {
 
   @override
   void onDetach() {
-    spineSnowGlobe.dispose();
+    manSpine.dispose();
     super.onDetach();
   }
 
   @override
   void onMount() {
     addToGameWidgetBuild(() => ref.listen(userInfoProvider, (provider, listener) {
-      switch (listener.slotStatus) {
-        case SlotStatus.init:
-          print('SlotStatus init');
+      switch (listener.slotGameStatus) {
+        case SlotGameStatus.mainGame:
           break;
-        case SlotStatus.spin:
-          print('SlotStatus spin');
-          break;
-        case SlotStatus.stop:
-          print('SlotStatus stop');
-          break;
-        case SlotStatus.win:
-          print('SlotStatus win');
+        case SlotGameStatus.freeGame:
+          buildFreeGameSpine();
           break;
         default:
           break;
